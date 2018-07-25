@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF09B61F21083659007096F6 /* MyWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B61E21083659007096F6 /* MyWriter.swift */; };
+		FF37920F210835E6006C0C74 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF37920E210835E6006C0C74 /* BufferedLogger.framework */; };
 		FF88708A210819670008C1B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF887089210819670008C1B1 /* AppDelegate.swift */; };
 		FF88708C210819670008C1B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88708B210819670008C1B1 /* ViewController.swift */; };
 		FF88708F210819670008C1B1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF88708D210819670008C1B1 /* Main.storyboard */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FF09B61E21083659007096F6 /* MyWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWriter.swift; sourceTree = "<group>"; };
+		FF37920E210835E6006C0C74 /* BufferedLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BufferedLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887086210819670008C1B1 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887089210819670008C1B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF88708B210819670008C1B1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -29,17 +33,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF37920F210835E6006C0C74 /* BufferedLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FF37920D210835E6006C0C74 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FF37920E210835E6006C0C74 /* BufferedLogger.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FF88707D210819670008C1B1 = {
 			isa = PBXGroup;
 			children = (
 				FF887088210819670008C1B1 /* Demo */,
 				FF887087210819670008C1B1 /* Products */,
+				FF37920D210835E6006C0C74 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +70,7 @@
 			children = (
 				FF887089210819670008C1B1 /* AppDelegate.swift */,
 				FF88708B210819670008C1B1 /* ViewController.swift */,
+				FF09B61E21083659007096F6 /* MyWriter.swift */,
 				FF88708D210819670008C1B1 /* Main.storyboard */,
 				FF887090210819670008C1B1 /* Assets.xcassets */,
 				FF887092210819670008C1B1 /* LaunchScreen.storyboard */,
@@ -138,6 +153,7 @@
 			files = (
 				FF88708C210819670008C1B1 /* ViewController.swift in Sources */,
 				FF88708A210819670008C1B1 /* AppDelegate.swift in Sources */,
+				FF09B61F21083659007096F6 /* MyWriter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,7 +227,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -262,7 +278,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -276,6 +292,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.yoheimuta.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -290,6 +307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Demo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.yoheimuta.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
