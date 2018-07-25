@@ -19,8 +19,4 @@ class MyWriter: Writer {
 
         completion(true)
     }
-
-    public func delay(try count: Int) -> TimeInterval {
-        return 2.0 * pow(2.0, Double(count - 1))
-    }
 }
