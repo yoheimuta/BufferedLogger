@@ -12,13 +12,13 @@ import Foundation
 public struct Chunk {
     // entries is a set of Entry.
     public let entries: Set<Entry>
-    
+
     var retryCount: Int = 0
-    
+
     init(entries: Set<Entry>) {
         self.entries = entries
     }
-    
+
     mutating func incrementRetryCount() {
         retryCount += 1
     }

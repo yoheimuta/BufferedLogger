@@ -129,6 +129,7 @@
 				FF88705F210819340008C1B1 /* Frameworks */,
 				FF887060210819340008C1B1 /* Headers */,
 				FF887061210819340008C1B1 /* Resources */,
+				FF09B625210855FE007096F6 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -212,6 +213,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FF09B625210855FE007096F6 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -exo pipefail\n\nPODS_ROOT=./Demo/Pods\n\nif [ -z \"$CI\" ]; then\n    ${PODS_ROOT}/SwiftLint/swiftlint autocorrect\n    ${PODS_ROOT}/SwiftLint/swiftlint\n\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger\nelse\n    ${PODS_ROOT}/SwiftLint/swiftlint --strict\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger --dryrun | tee /dev/stderr | grep 'swiftformat completed. 0'\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FF88705E210819340008C1B1 /* Sources */ = {
