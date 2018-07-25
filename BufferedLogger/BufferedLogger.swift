@@ -8,13 +8,16 @@
 
 import Foundation
 
-/// BufferedLogger is a logger that has a buffering function to bundle logs and retry flushing.
+/// BufferedLogger is a logger that has a buffering function
+/// to compile logs and retry flushing.
 public final class BufferedLogger {
     private let output: BufferedOutput
     
-    public init(writer: Writer, config: Config?) {
+    public init(writer: Writer,
+                config: Config?) {
         output = BufferedOutput(writer: writer,
                                 config: config ?? Config.default)
+        output.start()
     }
     
     /// post emits a log payload to the buffer without blocking.
@@ -23,10 +26,12 @@ public final class BufferedLogger {
         output.emit(entry)
     }
     
+    /// suspend stops the periodic flush execution.
     public func suspend() {
         output.suspend()
     }
     
+    /// resume restarts the periodic flush execution.
     public func resume() {
         output.resume()
     }

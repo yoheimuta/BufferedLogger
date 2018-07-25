@@ -12,11 +12,6 @@ final class BufferedOutput {
     private let writer: Writer
     private let config: Config
     
-    init(writer: Writer, config: Config) {
-        self.writer = writer
-        self.config = config
-    }
-    
     private var buffer: Set<Entry> = []
     private var timer: Timer?
     private var lastFlushDate: Date?
@@ -24,6 +19,11 @@ final class BufferedOutput {
         return Date()
     }
     
+    init(writer: Writer, config: Config) {
+        self.writer = writer
+        self.config = config
+    }
+
     deinit {
         timer?.invalidate()
     }
