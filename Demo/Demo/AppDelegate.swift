@@ -13,12 +13,15 @@ import BufferedLogger
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var logger: BufferedLogger!
+    var logger: BFLogger!
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         let writer = MyWriter()
-        logger = BufferedLogger.init(writer: writer)
+        let config = Config(flushEntryCount: 5,
+                            flushInterval: 10,
+                            retryRule: MyRetryRule(retryLimit: 3))
+        logger = BFLogger.init(writer: writer, config: config)
         logger.post("1".data(using: .utf8)!)
         logger.post("2".data(using: .utf8)!)
         logger.post("3".data(using: .utf8)!)

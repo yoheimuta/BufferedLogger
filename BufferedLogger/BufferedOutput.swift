@@ -95,8 +95,8 @@ final class BufferedOutput {
             var chunk = chunk
             chunk.incrementRetryCount()
             
-            if chunk.retryCount <= config.retryLimit {
-                let delay = writer.delay(try: chunk.retryCount)
+            if chunk.retryCount <= config.retryRule.retryLimit {
+                let delay = config.retryRule.delay(try: chunk.retryCount)
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                     self.callWriteChunk(chunk)
                 }

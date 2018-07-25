@@ -17,12 +17,19 @@ public struct Config {
     /// flushInterval is a interval to write a chunk.
     public let flushInterval: TimeInterval
     
-    /// retryLimit is a retry count.
-    /// The chunk is deleted after it failed more than this number of times.
-    public let retryLimit: Int
+    /// retryRule is a rule of retry.
+    public let retryRule: RetryRule
+    
+    public init(flushEntryCount: Int,
+                flushInterval: TimeInterval,
+                retryRule: RetryRule) {
+        self.flushEntryCount = flushEntryCount
+        self.flushInterval = flushInterval
+        self.retryRule = retryRule
+    }
     
     /// default is a default configuration.
     public static let `default` = Config(flushEntryCount: 5,
                                   flushInterval: 10,
-                                  retryLimit: 3)
+                                  retryRule: DefaultRetryRule(retryLimit: 3))
 }

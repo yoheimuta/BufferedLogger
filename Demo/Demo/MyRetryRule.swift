@@ -1,5 +1,5 @@
 //
-//  MyWriter.swift
+//  MyRetryRule.swift
 //  Demo
 //
 //  Created by YOSHIMUTA YOHEI on 2018/07/25.
@@ -9,15 +9,11 @@
 import Foundation
 import BufferedLogger
 
-class MyWriter: Writer {
-    func write(_ chunk: Chunk, completion: (Bool) -> Void) {
-        print("chunk is \(chunk)")
-        
-        chunk.entries.forEach {
-            print("entry is \($0)")
-        }
-        
-        completion(true)
+class MyRetryRule: RetryRule {
+    public let retryLimit: Int
+    
+    public init(retryLimit: Int) {
+        self.retryLimit = retryLimit
     }
     
     public func delay(try count: Int) -> TimeInterval {

@@ -1,5 +1,5 @@
 //
-//  BufferedLogger.swift
+//  BFLogger.swift
 //  BufferedLogger
 //
 //  Created by YOSHIMUTA YOHEI on 2018/07/25.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-/// BufferedLogger is a logger that has a buffering function
+/// BFLogger is a logger that has a buffering function
 /// to compile logs and retry flushing.
-public final class BufferedLogger {
+public final class BFLogger {
     private let output: BufferedOutput
     
     public init(writer: Writer,

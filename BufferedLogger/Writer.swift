@@ -17,10 +17,3 @@ public protocol Writer {
     ///   - completion: call with true when the write action is success.
     func write(_ chunk: Chunk, completion: (Bool) -> Void)
 }
-
-extension Writer {
-    /// delay is used for writer to decide how long to wait for a next retry.
-    public func delay(try count: Int) -> TimeInterval {
-        return 2.0 * pow(2.0, Double(count - 1))
-    }
-}

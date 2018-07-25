@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FF09B61F21083659007096F6 /* MyWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B61E21083659007096F6 /* MyWriter.swift */; };
+		FF09B623210844E0007096F6 /* MyRetryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B622210844E0007096F6 /* MyRetryRule.swift */; };
 		FF37920F210835E6006C0C74 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF37920E210835E6006C0C74 /* BufferedLogger.framework */; };
 		FF88708A210819670008C1B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF887089210819670008C1B1 /* AppDelegate.swift */; };
 		FF88708C210819670008C1B1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88708B210819670008C1B1 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		FF09B61E21083659007096F6 /* MyWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWriter.swift; sourceTree = "<group>"; };
+		FF09B622210844E0007096F6 /* MyRetryRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRetryRule.swift; sourceTree = "<group>"; };
 		FF37920E210835E6006C0C74 /* BufferedLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BufferedLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887086210819670008C1B1 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887089210819670008C1B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				FF887089210819670008C1B1 /* AppDelegate.swift */,
 				FF88708B210819670008C1B1 /* ViewController.swift */,
 				FF09B61E21083659007096F6 /* MyWriter.swift */,
+				FF09B622210844E0007096F6 /* MyRetryRule.swift */,
 				FF88708D210819670008C1B1 /* Main.storyboard */,
 				FF887090210819670008C1B1 /* Assets.xcassets */,
 				FF887092210819670008C1B1 /* LaunchScreen.storyboard */,
@@ -151,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF09B623210844E0007096F6 /* MyRetryRule.swift in Sources */,
 				FF88708C210819670008C1B1 /* ViewController.swift in Sources */,
 				FF88708A210819670008C1B1 /* AppDelegate.swift in Sources */,
 				FF09B61F21083659007096F6 /* MyWriter.swift in Sources */,

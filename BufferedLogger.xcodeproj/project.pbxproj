@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF09B62121083F94007096F6 /* RetryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B62021083F94007096F6 /* RetryRule.swift */; };
 		FF88706D210819350008C1B1 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF887063210819340008C1B1 /* BufferedLogger.framework */; };
 		FF887072210819350008C1B1 /* BufferedLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF887071210819350008C1B1 /* BufferedLoggerTests.swift */; };
 		FF887074210819350008C1B1 /* BufferedLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = FF887066210819340008C1B1 /* BufferedLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -15,7 +16,7 @@
 		FF8870A0210819E40008C1B1 /* Writer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709F210819E40008C1B1 /* Writer.swift */; };
 		FF8870A2210819F70008C1B1 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A1210819F70008C1B1 /* Config.swift */; };
 		FF8870A421081A3D0008C1B1 /* BufferedOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */; };
-		FF8870A621081AC10008C1B1 /* BufferedLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A521081AC10008C1B1 /* BufferedLogger.swift */; };
+		FF8870A621081AC10008C1B1 /* BFLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A521081AC10008C1B1 /* BFLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FF09B62021083F94007096F6 /* RetryRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryRule.swift; sourceTree = "<group>"; };
 		FF887063210819340008C1B1 /* BufferedLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BufferedLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887066210819340008C1B1 /* BufferedLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferedLogger.h; sourceTree = "<group>"; };
 		FF887067210819350008C1B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -40,7 +42,7 @@
 		FF88709F210819E40008C1B1 /* Writer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Writer.swift; sourceTree = "<group>"; };
 		FF8870A1210819F70008C1B1 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedOutput.swift; sourceTree = "<group>"; };
-		FF8870A521081AC10008C1B1 /* BufferedLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedLogger.swift; sourceTree = "<group>"; };
+		FF8870A521081AC10008C1B1 /* BFLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BFLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +89,9 @@
 				FF88709D210819C00008C1B1 /* Chunk.swift */,
 				FF88709F210819E40008C1B1 /* Writer.swift */,
 				FF8870A1210819F70008C1B1 /* Config.swift */,
+				FF09B62021083F94007096F6 /* RetryRule.swift */,
 				FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */,
-				FF8870A521081AC10008C1B1 /* BufferedLogger.swift */,
+				FF8870A521081AC10008C1B1 /* BFLogger.swift */,
 				FF887066210819340008C1B1 /* BufferedLogger.h */,
 				FF887067210819350008C1B1 /* Info.plist */,
 			);
@@ -217,9 +220,10 @@
 			files = (
 				FF8870A0210819E40008C1B1 /* Writer.swift in Sources */,
 				FF8870A2210819F70008C1B1 /* Config.swift in Sources */,
-				FF8870A621081AC10008C1B1 /* BufferedLogger.swift in Sources */,
+				FF8870A621081AC10008C1B1 /* BFLogger.swift in Sources */,
 				FF88709C210819A90008C1B1 /* Entry.swift in Sources */,
 				FF88709E210819C00008C1B1 /* Chunk.swift in Sources */,
+				FF09B62121083F94007096F6 /* RetryRule.swift in Sources */,
 				FF8870A421081A3D0008C1B1 /* BufferedOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
