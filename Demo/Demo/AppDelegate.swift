@@ -18,8 +18,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         let writer = MyWriter()
-        logger = BufferedLogger.init(writer: writer, config: nil)
-        logger.post(Data())
+        logger = BufferedLogger.init(writer: writer)
+        logger.post("1".data(using: .utf8)!)
+        logger.post("2".data(using: .utf8)!)
+        logger.post("3".data(using: .utf8)!)
+        logger.post("4".data(using: .utf8)!)
+        logger.post("5".data(using: .utf8)!)
+        logger.post("6".data(using: .utf8)!)
         return true
     }
 }

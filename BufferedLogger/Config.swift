@@ -21,7 +21,8 @@ public struct Config {
     /// The chunk is deleted after it failed more than this number of times.
     public let retryLimit: Int
     
-    static let `default` = Config(flushEntryCount: 5,
+    /// default is a default configuration.
+    public static let `default` = Config(flushEntryCount: 5,
                                   flushInterval: 10,
                                   retryLimit: 3)
 }

@@ -14,9 +14,9 @@ public final class BufferedLogger {
     private let output: BufferedOutput
     
     public init(writer: Writer,
-                config: Config?) {
+                config: Config = Config.default) {
         output = BufferedOutput(writer: writer,
-                                config: config ?? Config.default)
+                                config: config)
         output.start()
     }
     

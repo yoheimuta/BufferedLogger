@@ -10,8 +10,11 @@ import Foundation
 
 /// Writer represents a protocol to write a chunk of logs.
 public protocol Writer {
-    /// write is invoked with a chunk of logs by the timer
-    /// The chunk is removed when completion is called with true.
+    /// write is invoked with logs periodically.
+    ///
+    /// - Parameters:
+    ///   - chunk: a set of log entries
+    ///   - completion: call with true when the write action is success.
     func write(_ chunk: Chunk, completion: (Bool) -> Void)
 }
 

@@ -12,6 +12,11 @@ import BufferedLogger
 class MyWriter: Writer {
     func write(_ chunk: Chunk, completion: (Bool) -> Void) {
         print("chunk is \(chunk)")
+        
+        chunk.entries.forEach {
+            print("entry is \($0)")
+        }
+        
         completion(true)
     }
 }
