@@ -7,6 +7,7 @@
 //
 // swiftlint:disable superfluous_disable_command
 // swiftlint:disable function_body_length
+// swiftlint:disable line_length
 
 @testable import BufferedLogger
 import XCTest
@@ -26,6 +27,18 @@ final class MockWriter: Writer {
         completion(shouldSuccess)
         writeCallback?(calledWriteCount)
         calledWriteCount += 1
+    }
+}
+
+final class MockRetryRule: RetryRule {
+    let retryLimit: Int
+
+    init(retryLimit: Int) {
+        self.retryLimit = retryLimit
+    }
+
+    func delay(try _: Int) -> TimeInterval {
+        return 1
     }
 }
 
@@ -99,6 +112,41 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1")
                     ],
                     waitTime: 2
+                ),
+                (
+                    name: "expect to be called twice writer.write() after emitting entries and then interval time passed.",
+                    writer: MockWriter(shouldSuccess: true),
+                    config: Config(flushEntryCount: 3,
+                                   flushInterval: 2,
+                                   retryRule: DefaultRetryRule(retryLimit: 1)),
+                    inputPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!,
+                        "3".data(using: .utf8)!,
+                        "4".data(using: .utf8)!
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "flush 2")
+                    ],
+                    waitTime: 3
+                ),
+                (
+                    name: "expect to be called writer.write() 4 times after emitting one entry.",
+                    writer: MockWriter(shouldSuccess: false),
+                    config: Config(flushEntryCount: 1,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: MockRetryRule(retryLimit: 3)),
+                    inputPayloads: [
+                        "1".data(using: .utf8)!
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "retry 1"),
+                        self.expectation(description: "retry 2"),
+                        self.expectation(description: "retry 3")
+                    ],
+                    waitTime: 4
                 )
         ]
 
