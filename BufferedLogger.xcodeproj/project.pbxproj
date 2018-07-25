@@ -10,6 +10,12 @@
 		FF88706D210819350008C1B1 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF887063210819340008C1B1 /* BufferedLogger.framework */; };
 		FF887072210819350008C1B1 /* BufferedLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF887071210819350008C1B1 /* BufferedLoggerTests.swift */; };
 		FF887074210819350008C1B1 /* BufferedLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = FF887066210819340008C1B1 /* BufferedLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FF88709C210819A90008C1B1 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709B210819A90008C1B1 /* Entry.swift */; };
+		FF88709E210819C00008C1B1 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709D210819C00008C1B1 /* Chunk.swift */; };
+		FF8870A0210819E40008C1B1 /* Writer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709F210819E40008C1B1 /* Writer.swift */; };
+		FF8870A2210819F70008C1B1 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A1210819F70008C1B1 /* Config.swift */; };
+		FF8870A421081A3D0008C1B1 /* BufferedOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */; };
+		FF8870A621081AC10008C1B1 /* BufferedLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8870A521081AC10008C1B1 /* BufferedLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +35,12 @@
 		FF88706C210819350008C1B1 /* BufferedLoggerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BufferedLoggerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887071210819350008C1B1 /* BufferedLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedLoggerTests.swift; sourceTree = "<group>"; };
 		FF887073210819350008C1B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FF88709B210819A90008C1B1 /* Entry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
+		FF88709D210819C00008C1B1 /* Chunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
+		FF88709F210819E40008C1B1 /* Writer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Writer.swift; sourceTree = "<group>"; };
+		FF8870A1210819F70008C1B1 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedOutput.swift; sourceTree = "<group>"; };
+		FF8870A521081AC10008C1B1 /* BufferedLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +83,12 @@
 		FF887065210819340008C1B1 /* BufferedLogger */ = {
 			isa = PBXGroup;
 			children = (
+				FF88709B210819A90008C1B1 /* Entry.swift */,
+				FF88709D210819C00008C1B1 /* Chunk.swift */,
+				FF88709F210819E40008C1B1 /* Writer.swift */,
+				FF8870A1210819F70008C1B1 /* Config.swift */,
+				FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */,
+				FF8870A521081AC10008C1B1 /* BufferedLogger.swift */,
 				FF887066210819340008C1B1 /* BufferedLogger.h */,
 				FF887067210819350008C1B1 /* Info.plist */,
 			);
@@ -148,6 +166,7 @@
 				TargetAttributes = {
 					FF887062210819340008C1B1 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 					FF88706B210819350008C1B1 = {
@@ -196,6 +215,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF8870A0210819E40008C1B1 /* Writer.swift in Sources */,
+				FF8870A2210819F70008C1B1 /* Config.swift in Sources */,
+				FF8870A621081AC10008C1B1 /* BufferedLogger.swift in Sources */,
+				FF88709C210819A90008C1B1 /* Entry.swift in Sources */,
+				FF88709E210819C00008C1B1 /* Chunk.swift in Sources */,
+				FF8870A421081A3D0008C1B1 /* BufferedOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +359,7 @@
 		FF887078210819350008C1B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -346,6 +372,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.yoheimuta.BufferedLogger;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -354,6 +381,7 @@
 		FF887079210819350008C1B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -374,6 +402,7 @@
 		FF88707B210819350008C1B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = BufferedLoggerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -387,6 +416,7 @@
 		FF88707C210819350008C1B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = BufferedLoggerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
