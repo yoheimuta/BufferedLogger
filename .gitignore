@@ -24,6 +24,8 @@ DerivedData
 #
 vendor/bundle
 .bundle
+Demo/vendor/bundle
+Demo/.bundle
 
 # Custom
 #
