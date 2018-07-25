@@ -161,7 +161,7 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1"),
                         self.expectation(description: "flush 2")
                     ],
-                    waitTime: 3,
+                    waitTime: 4,
                     wantPayloads: [
                         "1".data(using: .utf8)!,
                         "2".data(using: .utf8)!,
