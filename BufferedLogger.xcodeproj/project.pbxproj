@@ -10,7 +10,6 @@
 		FF09B62121083F94007096F6 /* RetryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B62021083F94007096F6 /* RetryRule.swift */; };
 		FF09B6272108590C007096F6 /* BufferedOutputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B6262108590C007096F6 /* BufferedOutputTests.swift */; };
 		FF88706D210819350008C1B1 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF887063210819340008C1B1 /* BufferedLogger.framework */; };
-		FF887072210819350008C1B1 /* BufferedLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF887071210819350008C1B1 /* BufferedLoggerTests.swift */; };
 		FF887074210819350008C1B1 /* BufferedLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = FF887066210819340008C1B1 /* BufferedLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FF88709C210819A90008C1B1 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709B210819A90008C1B1 /* Entry.swift */; };
 		FF88709E210819C00008C1B1 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709D210819C00008C1B1 /* Chunk.swift */; };
@@ -37,7 +36,6 @@
 		FF887066210819340008C1B1 /* BufferedLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferedLogger.h; sourceTree = "<group>"; };
 		FF887067210819350008C1B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF88706C210819350008C1B1 /* BufferedLoggerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BufferedLoggerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FF887071210819350008C1B1 /* BufferedLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedLoggerTests.swift; sourceTree = "<group>"; };
 		FF887073210819350008C1B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF88709B210819A90008C1B1 /* Entry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
 		FF88709D210819C00008C1B1 /* Chunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
@@ -104,7 +102,6 @@
 			isa = PBXGroup;
 			children = (
 				FF09B6262108590C007096F6 /* BufferedOutputTests.swift */,
-				FF887071210819350008C1B1 /* BufferedLoggerTests.swift */,
 				FF887073210819350008C1B1 /* Info.plist */,
 			);
 			path = BufferedLoggerTests;
@@ -252,7 +249,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF887072210819350008C1B1 /* BufferedLoggerTests.swift in Sources */,
 				FF09B6272108590C007096F6 /* BufferedOutputTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
