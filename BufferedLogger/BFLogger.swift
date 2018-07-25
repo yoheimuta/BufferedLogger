@@ -10,6 +10,8 @@ import Foundation
 
 /// BFLogger is a logger that has a buffering function
 /// to compile logs and retry flushing.
+///
+/// BFLogger is thread safe.
 public final class BFLogger {
     private let output: BufferedOutput
 

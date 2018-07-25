@@ -25,13 +25,13 @@ final class MockWriter: Writer {
 
     func write(_ chunk: Chunk,
                completion: (Bool) -> Void) {
-        completion(shouldSuccess)
-        writeCallback?(calledWriteCount)
-
         calledWriteCount += 1
         chunk.entries.forEach {
             givenPayloads.append($0.payload)
         }
+
+        completion(shouldSuccess)
+        writeCallback?(calledWriteCount-1)
     }
 }
 
@@ -204,7 +204,9 @@ class BufferedOutputTests: XCTestCase {
             output.start()
 
             for payload in test.inputPayloads {
-                output.emit(Entry(payload))
+                DispatchQueue.global(qos: .default).async {
+                    output.emit(Entry(payload))
+                }
             }
 
             wait(for: test.expectations, timeout: test.waitTime)

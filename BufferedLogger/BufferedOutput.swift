@@ -9,6 +9,9 @@
 import Foundation
 
 final class BufferedOutput {
+    private let queue = DispatchQueue(label: "com.github.yoheimuta.BufferedLogger.BufferedOutput",
+                                      qos: .background)
+
     private let writer: Writer
     private let config: Config
 
@@ -29,26 +32,34 @@ final class BufferedOutput {
     }
 
     func start() {
-        setUpTimer()
-    }
-
-    func resume() {
-        flush()
-
-        setUpTimer()
-    }
-
-    func suspend() {
-        timer?.invalidate()
-    }
-
-    func emit(_ entry: Entry) {
-        buffer.insert(entry)
-        if buffer.count >= config.flushEntryCount {
-            flush()
+        queue.sync {
+            setUpTimer()
         }
     }
 
+    func resume() {
+        queue.sync {
+            flush()
+            setUpTimer()
+        }
+    }
+
+    func suspend() {
+        queue.sync {
+            timer?.invalidate()
+        }
+    }
+
+    func emit(_ entry: Entry) {
+        queue.async {
+            self.buffer.insert(entry)
+            if self.buffer.count >= self.config.flushEntryCount {
+                self.flush()
+            }
+        }
+    }
+
+    /// setUpTimer must be called by the queue worker.
     private func setUpTimer() {
         self.timer?.invalidate()
 
@@ -64,13 +75,18 @@ final class BufferedOutput {
     @objc private func tick(_: Timer) {
         if let lastFlushDate = lastFlushDate {
             if now.timeIntervalSince(lastFlushDate) > config.flushInterval {
-                flush()
+                queue.async {
+                    self.flush()
+                }
             }
         } else {
-            flush()
+            queue.async {
+                self.flush()
+            }
         }
     }
 
+    /// flush must be called by the queue worker.
     private func flush() {
         lastFlushDate = now
 
@@ -97,7 +113,7 @@ final class BufferedOutput {
 
             if chunk.retryCount <= config.retryRule.retryLimit {
                 let delay = config.retryRule.delay(try: chunk.retryCount)
-                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                queue.asyncAfter(deadline: .now() + delay) {
                     self.callWriteChunk(chunk)
                 }
             }
