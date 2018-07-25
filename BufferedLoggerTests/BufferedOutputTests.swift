@@ -17,6 +17,7 @@ final class MockWriter: Writer {
 
     var writeCallback: ((Int) -> Void)?
     private(set) var calledWriteCount: Int = 0
+    private(set) var givenPayloads: [Data] = []
 
     init(shouldSuccess: Bool) {
         self.shouldSuccess = shouldSuccess
@@ -26,7 +27,11 @@ final class MockWriter: Writer {
                completion: (Bool) -> Void) {
         completion(shouldSuccess)
         writeCallback?(calledWriteCount)
+
         calledWriteCount += 1
+        chunk.entries.forEach {
+            givenPayloads.append($0.payload)
+        }
     }
 }
 
@@ -42,6 +47,16 @@ final class MockRetryRule: RetryRule {
     }
 }
 
+enum PayloadDecorder {
+    static func decode(_ payloads: [Data]) -> [String] {
+        return payloads.map { PayloadDecorder.decode($0) }
+    }
+
+    static private func decode(_ payload: Data) -> String {
+        return String(data: payload, encoding: .utf8)!
+    }
+}
+
 class BufferedOutputTests: XCTestCase {
     func testFlush() {
         let tests: [(
@@ -50,7 +65,8 @@ class BufferedOutputTests: XCTestCase {
             config: Config,
             inputPayloads: [Data],
             expectations: [XCTestExpectation],
-            waitTime: TimeInterval
+            waitTime: TimeInterval,
+            wantPayloads: [Data]
         )] = [
                 (
                     name: "expect to be called a writer.write() after emitting one entry.",
@@ -64,7 +80,10 @@ class BufferedOutputTests: XCTestCase {
                     expectations: [
                         self.expectation(description: "flush 1")
                     ],
-                    waitTime: 1
+                    waitTime: 1,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!
+                    ]
                 ),
                 (
                     name: "expect to be called twice writer.write() after emitting two entries.",
@@ -80,7 +99,11 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1"),
                         self.expectation(description: "flush 2")
                     ],
-                    waitTime: 1
+                    waitTime: 1,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!
+                    ]
                 ),
                 (
                     name: "expect to be called a writer.write() after emitting two entries.",
@@ -95,7 +118,11 @@ class BufferedOutputTests: XCTestCase {
                     expectations: [
                         self.expectation(description: "flush 1")
                     ],
-                    waitTime: 1
+                    waitTime: 1,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!
+                    ]
                 ),
                 (
                     name: "expect to be called a writer.write() after interval time passed.",
@@ -111,7 +138,12 @@ class BufferedOutputTests: XCTestCase {
                     expectations: [
                         self.expectation(description: "flush 1")
                     ],
-                    waitTime: 2
+                    waitTime: 2,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!,
+                        "3".data(using: .utf8)!
+                    ]
                 ),
                 (
                     name: "expect to be called twice writer.write() after emitting entries and then interval time passed.",
@@ -129,7 +161,13 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1"),
                         self.expectation(description: "flush 2")
                     ],
-                    waitTime: 3
+                    waitTime: 3,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!,
+                        "3".data(using: .utf8)!,
+                        "4".data(using: .utf8)!
+                    ]
                 ),
                 (
                     name: "expect to be called writer.write() 4 times after emitting one entry.",
@@ -146,7 +184,13 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "retry 2"),
                         self.expectation(description: "retry 3")
                     ],
-                    waitTime: 4
+                    waitTime: 4,
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!
+                    ]
                 )
         ]
 
@@ -166,6 +210,10 @@ class BufferedOutputTests: XCTestCase {
             wait(for: test.expectations, timeout: test.waitTime)
             XCTAssertEqual(test.writer.calledWriteCount,
                            test.expectations.count,
+                           test.name)
+
+            XCTAssertEqual(PayloadDecorder.decode(test.writer.givenPayloads).sorted(),
+                           PayloadDecorder.decode(test.wantPayloads).sorted(),
                            test.name)
         }
     }
