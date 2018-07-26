@@ -28,13 +28,13 @@ final class BufferedOutput {
     }
 
     deinit {
-        DispatchQueue.main.sync {
+        queue.sync {
             timer?.invalidate()
         }
     }
 
     func start() {
-        DispatchQueue.main.sync {
+        queue.sync {
             setUpTimer()
         }
     }
@@ -42,14 +42,12 @@ final class BufferedOutput {
     func resume() {
         queue.sync {
             flush()
-        }
-        DispatchQueue.main.sync {
             setUpTimer()
         }
     }
 
     func suspend() {
-        DispatchQueue.main.sync {
+        queue.sync {
             timer?.invalidate()
         }
     }
@@ -63,7 +61,7 @@ final class BufferedOutput {
         }
     }
 
-    /// setUpTimer must be called by the main thread.
+    /// setUpTimer must be called by the queue worker.
     private func setUpTimer() {
         self.timer?.invalidate()
 
@@ -72,7 +70,7 @@ final class BufferedOutput {
                           selector: #selector(tick(_:)),
                           userInfo: nil,
                           repeats: true)
-        RunLoop.current.add(timer, forMode: .commonModes)
+        RunLoop.main.add(timer, forMode: .commonModes)
         self.timer = timer
     }
 
