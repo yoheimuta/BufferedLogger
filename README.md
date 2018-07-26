@@ -1,7 +1,8 @@
 # BufferedLogger
 
-<a href="https://swift.org" target="_blank"><img src="https://img.shields.io/badge/Language-Swift4-orange.svg" alt="Language Swift 4"></a>
 [![Build Status](https://app.bitrise.io/app/75f1a12b7326ea09/status.svg?token=-Wus-j9Iq8IVKcFB3wLhSg&branch=master)](https://app.bitrise.io/app/75f1a12b7326ea09)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+<a href="https://swift.org" target="_blank"><img src="https://img.shields.io/badge/Language-Swift4-orange.svg" alt="Language Swift 4"></a>
 
 BufferedLogger is a tiny but thread-safe logger with a buffering and retrying mechanism for iOS.
 
