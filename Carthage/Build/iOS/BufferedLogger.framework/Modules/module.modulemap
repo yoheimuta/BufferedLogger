@@ -1,0 +1,11 @@
+framework module BufferedLogger {
+  umbrella header "BufferedLogger.h"
+
+  export *
+  module * { export * }
+}
+
+module BufferedLogger.Swift {
+    header "BufferedLogger-Swift.h"
+    requires objc
+}

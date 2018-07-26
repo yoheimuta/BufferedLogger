@@ -32,3 +32,4 @@ Demo/.bundle
 /.DS_Store
 .DS_Store
 /build
+/Demo/build
