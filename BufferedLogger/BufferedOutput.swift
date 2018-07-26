@@ -28,11 +28,13 @@ final class BufferedOutput {
     }
 
     deinit {
-        timer?.invalidate()
+        DispatchQueue.main.sync {
+            timer?.invalidate()
+        }
     }
 
     func start() {
-        queue.sync {
+        DispatchQueue.main.sync {
             setUpTimer()
         }
     }
@@ -40,12 +42,14 @@ final class BufferedOutput {
     func resume() {
         queue.sync {
             flush()
+        }
+        DispatchQueue.main.sync {
             setUpTimer()
         }
     }
 
     func suspend() {
-        queue.sync {
+        DispatchQueue.main.sync {
             timer?.invalidate()
         }
     }
@@ -59,7 +63,7 @@ final class BufferedOutput {
         }
     }
 
-    /// setUpTimer must be called by the queue worker.
+    /// setUpTimer must be called by the main thread.
     private func setUpTimer() {
         self.timer?.invalidate()
 
