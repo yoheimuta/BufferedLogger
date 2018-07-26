@@ -15,6 +15,11 @@ You can use this framework...
 - To send a group of log entries to your server.
 - To resend them when some errors like a networking trouble is occured.
 
+## Runtime Requirements
+
+- iOS 9.0 or later
+- Xcode 9.x - Swift4
+
 ## Installation
 
 ### Carthage
@@ -22,6 +27,7 @@ You can use this framework...
 ```
 github "yoheimuta/BufferedLogger"
 ```
+
 ## Usage
 
 For details, refer to a [Demo project](https://github.com/yoheimuta/BufferedLogger/tree/master/Demo).
