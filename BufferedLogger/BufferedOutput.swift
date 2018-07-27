@@ -70,7 +70,7 @@ final class BufferedOutput {
                           selector: #selector(tick(_:)),
                           userInfo: nil,
                           repeats: true)
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             RunLoop.main.add(timer, forMode: .commonModes)
         }
         self.timer = timer
