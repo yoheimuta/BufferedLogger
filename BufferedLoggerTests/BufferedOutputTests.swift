@@ -229,17 +229,17 @@ class BufferedOutputTests: XCTestCase {
     func testSuspend() {
         let tests: [(
             name: String,
-            isCallSuspend: Bool,
+            callSuspend: Bool,
             wantCalledWriteCount: Int
         )] = [
             (
                 name: "expect a call to flush without suspension",
-                isCallSuspend: false,
+                callSuspend: false,
                 wantCalledWriteCount: 1
             ),
             (
                 name: "expect no call to flush after suspension",
-                isCallSuspend: true,
+                callSuspend: true,
                 wantCalledWriteCount: 0
             )
         ]
@@ -252,7 +252,7 @@ class BufferedOutputTests: XCTestCase {
                                                        retryRule: DefaultRetryRule(retryLimit: 1)))
             output.start()
 
-            if test.isCallSuspend {
+            if test.callSuspend {
                 output.suspend()
             }
 
@@ -272,17 +272,17 @@ class BufferedOutputTests: XCTestCase {
     func testResume() {
         let tests: [(
             name: String,
-            isCallResume: Bool,
+            callResume: Bool,
             wantCalledWriteCount: Int
             )] = [
                 (
                     name: "expect no call to flush without resumption",
-                    isCallResume: false,
+                    callResume: false,
                     wantCalledWriteCount: 0
                 ),
                 (
                     name: "expect a call to flush after resumption",
-                    isCallResume: true,
+                    callResume: true,
                     wantCalledWriteCount: 1
                 )
         ]
@@ -296,7 +296,7 @@ class BufferedOutputTests: XCTestCase {
             output.start()
             output.suspend()
 
-            if test.isCallResume {
+            if test.callResume {
                 output.resume()
             }
 
