@@ -268,4 +268,48 @@ class BufferedOutputTests: XCTestCase {
                            test.name)
         }
     }
+
+    func testResume() {
+        let tests: [(
+            name: String,
+            isCallResume: Bool,
+            wantCalledWriteCount: Int
+            )] = [
+                (
+                    name: "expect no call to flush without resumption",
+                    isCallResume: false,
+                    wantCalledWriteCount: 0
+                ),
+                (
+                    name: "expect a call to flush after resumption",
+                    isCallResume: true,
+                    wantCalledWriteCount: 1
+                )
+        ]
+
+        for test in tests {
+            let mwriter = MockWriter(shouldSuccess: true)
+            let output = BufferedOutput(writer: mwriter,
+                                        config: Config(flushEntryCount: 10,
+                                                       flushInterval: 1,
+                                                       retryRule: DefaultRetryRule(retryLimit: 1)))
+            output.start()
+            output.suspend()
+
+            if test.isCallResume {
+                output.resume()
+            }
+
+            output.emit(Entry("1".data(using: .utf8)!))
+
+            let afterExpectation = expectation(description: "after")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                afterExpectation.fulfill()
+            }
+            wait(for: [afterExpectation], timeout: 4.0)
+            XCTAssertEqual(mwriter.calledWriteCount,
+                           test.wantCalledWriteCount,
+                           test.name)
+        }
+    }
 }
