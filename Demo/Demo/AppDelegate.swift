@@ -30,4 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         logger.post("6".data(using: .utf8)!)
         return true
     }
+
+    func applicationDidEnterBackground(_: UIApplication) {
+        logger.suspend()
+    }
+
+    func applicationWillEnterForeground(_: UIApplication) {
+        logger.resume()
+    }
 }
