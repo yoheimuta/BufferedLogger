@@ -201,7 +201,13 @@ class BufferedOutputTests: XCTestCase {
 
             let output = BufferedOutput(writer: test.writer,
                                         config: test.config)
-            output.start()
+
+            let setupExpectation = expectation(description: "setup")
+            DispatchQueue.global(qos: .default).async {
+                output.start()
+                setupExpectation.fulfill()
+            }
+            wait(for: [setupExpectation], timeout: 1.0)
 
             for payload in test.inputPayloads {
                 DispatchQueue.global(qos: .default).async {

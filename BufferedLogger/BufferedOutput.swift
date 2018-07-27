@@ -28,7 +28,9 @@ final class BufferedOutput {
     }
 
     deinit {
-        timer?.invalidate()
+        queue.sync {
+            timer?.invalidate()
+        }
     }
 
     func start() {
@@ -68,7 +70,9 @@ final class BufferedOutput {
                           selector: #selector(tick(_:)),
                           userInfo: nil,
                           repeats: true)
-        RunLoop.current.add(timer, forMode: .commonModes)
+        DispatchQueue.main.sync {
+            RunLoop.main.add(timer, forMode: .commonModes)
+        }
         self.timer = timer
     }
 
