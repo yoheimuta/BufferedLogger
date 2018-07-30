@@ -10,13 +10,14 @@ import Foundation
 
 /// Entry represents an entity to be written by a writer.
 public struct Entry: Codable, Hashable {
-    /// createdDate is the date the entry is created.
-    public var createdDate: Date
+    /// createTime is the date the entry is created.
+    public let createTime: Date
 
     /// payload is a log content.
     public let payload: Data
 
-    private let identifier: UUID = UUID()
+    /// identifier is an unique entry ID.
+    public let identifier: UUID = UUID()
 
     public var hashValue: Int {
         return identifier.hashValue
@@ -26,8 +27,8 @@ public struct Entry: Codable, Hashable {
         return lhs.identifier == rhs.identifier
     }
 
-    init(_ payload: Data, createdDate: Date = Date()) {
+    init(_ payload: Data, createTime: Date = Date()) {
         self.payload = payload
-        self.createdDate = createdDate
+        self.createTime = createTime
     }
 }

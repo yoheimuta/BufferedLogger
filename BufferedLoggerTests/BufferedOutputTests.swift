@@ -24,7 +24,7 @@ final class MockWriter: Writer {
     }
 
     func write(_ chunk: Chunk,
-               completion: (Bool) -> Void) {
+               completion: @escaping (Bool) -> Void) {
         calledWriteCount += 1
         chunk.entries.forEach {
             givenPayloads.append($0.payload)

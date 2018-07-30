@@ -10,7 +10,7 @@ import BufferedLogger
 import Foundation
 
 class MyWriter: Writer {
-    func write(_ chunk: Chunk, completion: (Bool) -> Void) {
+    func write(_ chunk: Chunk, completion: @escaping (Bool) -> Void) {
         print("chunk is \(chunk)")
 
         chunk.entries.forEach {
