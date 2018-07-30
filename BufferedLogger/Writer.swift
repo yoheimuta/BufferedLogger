@@ -15,5 +15,5 @@ public protocol Writer {
     /// - Parameters:
     ///   - chunk: a set of log entries
     ///   - completion: call with true when the write action is success.
-    func write(_ chunk: Chunk, completion: (Bool) -> Void)
+    func write(_ chunk: Chunk, completion: @escaping (Bool) -> Void)
 }
