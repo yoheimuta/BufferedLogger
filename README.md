@@ -13,7 +13,7 @@ BufferedLogger is a tiny but thread-safe logger with a buffering and retrying me
 You can use this framework...
 
 - To send a group of log entries to your server.
-- To resend them when some errors like a networking trouble is occured.
+- To resend them when some errors like a networking trouble were occured.
 
 ## Runtime Requirements
 
