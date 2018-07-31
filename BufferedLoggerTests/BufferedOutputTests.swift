@@ -540,8 +540,7 @@ class BufferedOutputTests: XCTestCase {
                         Entry("9".data(using: .utf8)!, createTime: fmt.date(from: "2018-4-29")!)
                     ],
                     emitLogs: [
-                        Entry("10".data(using: .utf8)!),
-                        Entry("11".data(using: .utf8)!)
+                        Entry("10".data(using: .utf8)!)
                     ],
                     expectations: [
                         self.expectation(description: "flush 1"),
