@@ -233,7 +233,8 @@ class BufferedOutputTests: XCTestCase {
             let mStorage = MockEntryStorage()
             let output = BufferedOutput(writer: test.writer,
                                         config: test.config,
-                                        entryStorage: mStorage)
+                                        entryStorage: mStorage,
+                                        internalErrorLogger: InternalErrorLogger(LogConsoleDestination()))
 
             let setupExpectation = expectation(description: "setup")
             DispatchQueue.global(qos: .default).async {
@@ -287,7 +288,8 @@ class BufferedOutputTests: XCTestCase {
                                         config: Config(flushEntryCount: 10,
                                                        flushInterval: 1,
                                                        retryRule: DefaultRetryRule(retryLimit: 1)),
-                                        entryStorage: MockEntryStorage())
+                                        entryStorage: MockEntryStorage(),
+                                        internalErrorLogger: InternalErrorLogger(LogConsoleDestination()))
             output.start()
 
             if test.callSuspend {
@@ -331,7 +333,8 @@ class BufferedOutputTests: XCTestCase {
                                         config: Config(flushEntryCount: 10,
                                                        flushInterval: 1,
                                                        retryRule: DefaultRetryRule(retryLimit: 1)),
-                                        entryStorage: MockEntryStorage())
+                                        entryStorage: MockEntryStorage(),
+                                        internalErrorLogger: InternalErrorLogger(LogConsoleDestination()))
             output.start()
             output.suspend()
 
@@ -440,7 +443,8 @@ class BufferedOutputTests: XCTestCase {
 
             let output = BufferedOutput(writer: mwriter,
                                         config: test.config,
-                                        entryStorage: mStorage)
+                                        entryStorage: mStorage,
+                                        internalErrorLogger: InternalErrorLogger(LogConsoleDestination()))
             output.start()
 
             wait(for: test.expectations, timeout: TimeInterval(test.expectations.count))

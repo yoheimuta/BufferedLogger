@@ -17,10 +17,12 @@ public final class BFLogger {
 
     public init(writer: Writer,
                 config: Config = Config.default,
-                entryStorage: EntryStorage = EntryDisk.default) {
+                entryStorage: EntryStorage = EntryDisk.default,
+                internalErrorLogDestination: InternalErrorLogDestination = LogConsoleDestination()) {
         output = BufferedOutput(writer: writer,
                                 config: config,
-                                entryStorage: entryStorage)
+                                entryStorage: entryStorage,
+                                internalErrorLogger: InternalErrorLogger(internalErrorLogDestination))
         output.start()
     }
 

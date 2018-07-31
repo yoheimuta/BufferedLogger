@@ -15,6 +15,7 @@ final class BufferedOutput {
     private let writer: Writer
     private let config: Config
     private let entryStorage: EntryStorage
+    private let internalErrorLogger: InternalErrorLogger
 
     private var buffer: Set<Entry> = []
     private var timer: Timer?
@@ -23,10 +24,15 @@ final class BufferedOutput {
         return Date()
     }
 
-    init(writer: Writer, config: Config, entryStorage: EntryStorage) {
+    init(writer: Writer,
+         config: Config,
+         entryStorage: EntryStorage,
+         internalErrorLogger: InternalErrorLogger
+    ) {
         self.writer = writer
         self.config = config
         self.entryStorage = entryStorage
+        self.internalErrorLogger = internalErrorLogger
     }
 
     deinit {
@@ -64,7 +70,7 @@ final class BufferedOutput {
             do {
                 try self.entryStorage.save(entry, to: self.config.storagePath)
             } catch {
-                print("\(error)")
+                self.internalErrorLogger.log("failed to save a log to the storage: \(error)")
             }
 
             self.buffer.insert(entry)
@@ -111,7 +117,7 @@ final class BufferedOutput {
             let entries = try entryStorage.retrieveAll(from: config.storagePath)
             buffer = buffer.union(entries)
         } catch {
-            print("\(error)")
+            internalErrorLogger.log("failed to retrieve logs from the storage: \(error)")
         }
     }
 
@@ -138,7 +144,7 @@ final class BufferedOutput {
                     try self.entryStorage.remove(chunk.entries,
                                                  from: self.config.storagePath)
                 } catch {
-                    print("\(error)")
+                    self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
                 }
                 return
             }

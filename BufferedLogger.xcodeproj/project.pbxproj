@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FF0589F8210F17EC00B23657 /* EntryDiskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0589F7210F17EC00B23657 /* EntryDiskTests.swift */; };
+		FF058A0B2110116500B23657 /* InternalErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF058A0A2110116500B23657 /* InternalErrorLogger.swift */; };
 		FF09B62121083F94007096F6 /* RetryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B62021083F94007096F6 /* RetryRule.swift */; };
 		FF09B6272108590C007096F6 /* BufferedOutputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B6262108590C007096F6 /* BufferedOutputTests.swift */; };
 		FF454888210EF44D0089CDB2 /* EntryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF454887210EF44D0089CDB2 /* EntryStorage.swift */; };
@@ -34,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		FF0589F7210F17EC00B23657 /* EntryDiskTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryDiskTests.swift; sourceTree = "<group>"; };
+		FF058A0A2110116500B23657 /* InternalErrorLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalErrorLogger.swift; sourceTree = "<group>"; };
 		FF09B62021083F94007096F6 /* RetryRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryRule.swift; sourceTree = "<group>"; };
 		FF09B6262108590C007096F6 /* BufferedOutputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedOutputTests.swift; sourceTree = "<group>"; };
 		FF454887210EF44D0089CDB2 /* EntryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryStorage.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				FF88709F210819E40008C1B1 /* Writer.swift */,
 				FF8870A1210819F70008C1B1 /* Config.swift */,
 				FF09B62021083F94007096F6 /* RetryRule.swift */,
+				FF058A0A2110116500B23657 /* InternalErrorLogger.swift */,
 				FF8870A321081A3D0008C1B1 /* BufferedOutput.swift */,
 				FF8870A521081AC10008C1B1 /* BFLogger.swift */,
 				FF887066210819340008C1B1 /* BufferedLogger.h */,
@@ -245,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF8870A0210819E40008C1B1 /* Writer.swift in Sources */,
+				FF058A0B2110116500B23657 /* InternalErrorLogger.swift in Sources */,
 				FF8870A2210819F70008C1B1 /* Config.swift in Sources */,
 				FF8870A621081AC10008C1B1 /* BFLogger.swift in Sources */,
 				FF88709C210819A90008C1B1 /* Entry.swift in Sources */,
