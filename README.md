@@ -70,26 +70,47 @@ logger.post("3".data(using: .utf8)!)
 
 You can also create your configuration for buffering and emitting mechanism.
 
-If you omit to define your configuration, default below is used. Each meaning is in a protocol comment.
+If you omit to define your configuration, default below is used. Each meaning is in a comment.
 
 ```swift
-public static let `default` = Config(flushEntryCount: 5,
-                                     flushInterval: 10,
-                                     retryRule: DefaultRetryRule(retryLimit: 3))
+/// Config represents a configuration for buffering and writing logs.
+public struct Config {
+    /// flushEntryCount is the maximum number of entries per one chunk.
+    /// When the number of entries of buffer reaches this count, it starts to write a chunk.
+    public let flushEntryCount: Int
 
-public class DefaultRetryRule: RetryRule {
-    public let retryLimit: Int
+    /// flushInterval is a interval to write a chunk.
+    public let flushInterval: TimeInterval
 
-    public init(retryLimit: Int) {
-        self.retryLimit = retryLimit
+    /// retryRule is a rule of retry.
+    public let retryRule: RetryRule
+
+    /// maxEntryCountInStorage is a max count of entry to be saved in the storage.
+    /// When the number of entries in the storage reaches this count, it starts to
+    /// delete the older entries.
+    public let maxEntryCountInStorage: Int
+
+    /// storagePath is a path to the entries.
+    /// When you uses multiple BFLogger, you must set an unique path.
+    public let storagePath: String
+
+    public init(flushEntryCount: Int = 5,
+                flushInterval: TimeInterval = 10,
+                retryRule: RetryRule = DefaultRetryRule(retryLimit: 3),
+                maxEntryCountInStorage: Int = 1000,
+                storagePath: String = defaultStoragePath) {
+        self.flushEntryCount = flushEntryCount
+        self.flushInterval = flushInterval
+        self.retryRule = retryRule
+        self.maxEntryCountInStorage = maxEntryCountInStorage
+        self.storagePath = storagePath
     }
 
-    public func delay(try count: Int) -> TimeInterval {
-        return 2.0 * pow(2.0, Double(count - 1))
-    }
+    /// default is a default configuration.
+    public static let `default` = Config()
 }
 ```
 
-## TODO
+# Persistence
 
-- [ ] Stores the unsent entries in the local storage when the application couldn't send log entries.
+It stores the unsent entries in the local storage when the application couldn't send log entries.

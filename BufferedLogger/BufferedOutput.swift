@@ -144,7 +144,7 @@ final class BufferedOutput {
         let dropCountAtOneTime = config.flushEntryCount * 3
         let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
         let dropped = buffer.subtracting(newBuffer)
-        
+
         // dropped the buffer before the failurable action.
         buffer = newBuffer
         try entryStorage.remove(dropped, from: config.storagePath)
