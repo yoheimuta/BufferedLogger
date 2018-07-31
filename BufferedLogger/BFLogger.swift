@@ -16,9 +16,11 @@ public final class BFLogger {
     private let output: BufferedOutput
 
     public init(writer: Writer,
-                config: Config = Config.default) {
+                config: Config = Config.default,
+                entryStorage: EntryStorage = EntryDisk.default) {
         output = BufferedOutput(writer: writer,
-                                config: config)
+                                config: config,
+                                entryStorage: entryStorage)
         output.start()
     }
 

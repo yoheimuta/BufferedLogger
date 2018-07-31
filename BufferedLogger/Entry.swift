@@ -17,7 +17,7 @@ public struct Entry: Codable, Hashable {
     public let payload: Data
 
     /// identifier is an unique entry ID.
-    public let identifier: UUID = UUID()
+    public let identifier: UUID
 
     public var hashValue: Int {
         return identifier.hashValue
@@ -30,5 +30,6 @@ public struct Entry: Codable, Hashable {
     init(_ payload: Data, createTime: Date = Date()) {
         self.payload = payload
         self.createTime = createTime
+        identifier = UUID()
     }
 }

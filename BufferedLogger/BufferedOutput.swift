@@ -14,6 +14,7 @@ final class BufferedOutput {
 
     private let writer: Writer
     private let config: Config
+    private let entryStorage: EntryStorage
 
     private var buffer: Set<Entry> = []
     private var timer: Timer?
@@ -22,9 +23,10 @@ final class BufferedOutput {
         return Date()
     }
 
-    init(writer: Writer, config: Config) {
+    init(writer: Writer, config: Config, entryStorage: EntryStorage) {
         self.writer = writer
         self.config = config
+        self.entryStorage = entryStorage
     }
 
     deinit {
@@ -35,13 +37,18 @@ final class BufferedOutput {
 
     func start() {
         queue.sync {
+            reloadEntities()
+            flush()
+
             setUpTimer()
         }
     }
 
     func resume() {
         queue.sync {
+            reloadEntities()
             flush()
+
             setUpTimer()
         }
     }
@@ -54,6 +61,12 @@ final class BufferedOutput {
 
     func emit(_ entry: Entry) {
         queue.async {
+            do {
+                try self.entryStorage.save(entry, to: self.config.storagePath)
+            } catch {
+                print("\(error)")
+            }
+
             self.buffer.insert(entry)
             if self.buffer.count >= self.config.flushEntryCount {
                 self.flush()
@@ -90,6 +103,18 @@ final class BufferedOutput {
         }
     }
 
+    /// reloadEntities must be called by the queue worker.
+    private func reloadEntities() {
+        buffer.removeAll()
+
+        do {
+            let entries = try entryStorage.retrieveAll(from: config.storagePath)
+            buffer = buffer.union(entries)
+        } catch {
+            print("\(error)")
+        }
+    }
+
     /// flush must be called by the queue worker.
     private func flush() {
         lastFlushDate = now
@@ -109,6 +134,12 @@ final class BufferedOutput {
     private func callWriteChunk(_ chunk: Chunk) {
         writer.write(chunk) { success in
             if success {
+                do {
+                    try self.entryStorage.remove(chunk.entries,
+                                                 from: self.config.storagePath)
+                } catch {
+                    print("\(error)")
+                }
                 return
             }
 

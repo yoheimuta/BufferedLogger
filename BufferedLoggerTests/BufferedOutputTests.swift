@@ -8,6 +8,8 @@
 // swiftlint:disable superfluous_disable_command
 // swiftlint:disable function_body_length
 // swiftlint:disable line_length
+// swiftlint:disable file_length
+// swiftlint:disable type_body_length
 
 @testable import BufferedLogger
 import XCTest
@@ -47,6 +49,28 @@ final class MockRetryRule: RetryRule {
     }
 }
 
+final class MockEntryStorage: EntryStorage {
+    private var buffer: [String: Set<Entry>] = [:]
+
+    func retrieveAll(from path: String) throws -> Set<Entry> {
+        guard let logs = buffer[path] else {
+            return []
+        }
+        return logs
+    }
+
+    func save(_ log: Entry, to path: String) throws {
+        if buffer[path] == nil {
+            buffer[path] = Set<Entry>()
+        }
+        buffer[path]?.formUnion([log])
+    }
+
+    func remove(_ logs: Set<Entry>, from path: String) throws {
+        buffer[path]?.subtract(logs)
+    }
+}
+
 enum PayloadDecorder {
     static func decode(_ payloads: [Data]) -> [String] {
         return payloads.map { PayloadDecorder.decode($0) }
@@ -66,7 +90,8 @@ class BufferedOutputTests: XCTestCase {
             inputPayloads: [Data],
             expectations: [XCTestExpectation],
             waitTime: TimeInterval,
-            wantPayloads: [Data]
+            wantPayloads: [Data],
+            wantLeftEntryCount: Int
         )] = [
                 (
                     name: "expect to be called a writer.write() after emitting one entry.",
@@ -83,7 +108,8 @@ class BufferedOutputTests: XCTestCase {
                     waitTime: 1,
                     wantPayloads: [
                         "1".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 0
                 ),
                 (
                     name: "expect to be called twice writer.write() after emitting two entries.",
@@ -103,7 +129,8 @@ class BufferedOutputTests: XCTestCase {
                     wantPayloads: [
                         "1".data(using: .utf8)!,
                         "2".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 0
                 ),
                 (
                     name: "expect to be called a writer.write() after emitting two entries.",
@@ -122,7 +149,8 @@ class BufferedOutputTests: XCTestCase {
                     wantPayloads: [
                         "1".data(using: .utf8)!,
                         "2".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 0
                 ),
                 (
                     name: "expect to be called a writer.write() after interval time passed.",
@@ -143,7 +171,8 @@ class BufferedOutputTests: XCTestCase {
                         "1".data(using: .utf8)!,
                         "2".data(using: .utf8)!,
                         "3".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 0
                 ),
                 (
                     name: "expect to be called twice writer.write() after emitting entries and then interval time passed.",
@@ -167,7 +196,8 @@ class BufferedOutputTests: XCTestCase {
                         "2".data(using: .utf8)!,
                         "3".data(using: .utf8)!,
                         "4".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 0
                 ),
                 (
                     name: "expect to be called writer.write() 4 times after emitting one entry.",
@@ -190,7 +220,8 @@ class BufferedOutputTests: XCTestCase {
                         "1".data(using: .utf8)!,
                         "1".data(using: .utf8)!,
                         "1".data(using: .utf8)!
-                    ]
+                    ],
+                    wantLeftEntryCount: 1
                 )
         ]
 
@@ -199,8 +230,10 @@ class BufferedOutputTests: XCTestCase {
                 test.expectations[count].fulfill()
             }
 
+            let mStorage = MockEntryStorage()
             let output = BufferedOutput(writer: test.writer,
-                                        config: test.config)
+                                        config: test.config,
+                                        entryStorage: mStorage)
 
             let setupExpectation = expectation(description: "setup")
             DispatchQueue.global(qos: .default).async {
@@ -222,6 +255,10 @@ class BufferedOutputTests: XCTestCase {
 
             XCTAssertEqual(PayloadDecorder.decode(test.writer.givenPayloads).sorted(),
                            PayloadDecorder.decode(test.wantPayloads).sorted(),
+                           test.name)
+
+            XCTAssertEqual(try mStorage.retrieveAll(from: defaultStoragePath).count,
+                           test.wantLeftEntryCount,
                            test.name)
         }
     }
@@ -249,7 +286,8 @@ class BufferedOutputTests: XCTestCase {
             let output = BufferedOutput(writer: mwriter,
                                         config: Config(flushEntryCount: 10,
                                                        flushInterval: 1,
-                                                       retryRule: DefaultRetryRule(retryLimit: 1)))
+                                                       retryRule: DefaultRetryRule(retryLimit: 1)),
+                                        entryStorage: MockEntryStorage())
             output.start()
 
             if test.callSuspend {
@@ -292,7 +330,8 @@ class BufferedOutputTests: XCTestCase {
             let output = BufferedOutput(writer: mwriter,
                                         config: Config(flushEntryCount: 10,
                                                        flushInterval: 1,
-                                                       retryRule: DefaultRetryRule(retryLimit: 1)))
+                                                       retryRule: DefaultRetryRule(retryLimit: 1)),
+                                        entryStorage: MockEntryStorage())
             output.start()
             output.suspend()
 
@@ -307,6 +346,104 @@ class BufferedOutputTests: XCTestCase {
                 afterExpectation.fulfill()
             }
             wait(for: [afterExpectation], timeout: 4.0)
+            XCTAssertEqual(mwriter.calledWriteCount,
+                           test.wantCalledWriteCount,
+                           test.name)
+        }
+    }
+
+    func testStartWithEntryStorage() {
+        let path = "testStartWithEntryStorage"
+
+        let tests: [(
+            name: String,
+            config: Config,
+            inputLogs: Set<Entry>,
+            expectations: [XCTestExpectation],
+            wantCalledWriteCount: Int
+        )] = [
+                (
+                    name: "expect no flush calls when there were not any entries in the storage",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   storagePath: path),
+                    inputLogs: [],
+                    expectations: [],
+                    wantCalledWriteCount: 0
+                ),
+                (
+                    name: "expect a flush call when there were an entry in the storage",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1")
+                    ],
+                    wantCalledWriteCount: 1
+                ),
+                (
+                    name: "expect a flush call when there were entries in the storage",
+                    config: Config(flushEntryCount: 4,
+                                   flushInterval: 1,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!),
+                        Entry("2".data(using: .utf8)!),
+                        Entry("3".data(using: .utf8)!),
+                        Entry("4".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1")
+                    ],
+                    wantCalledWriteCount: 1
+                ),
+                (
+                    name: "expect twice flush calls when there were entries in the storage",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: 1,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!),
+                        Entry("2".data(using: .utf8)!),
+                        Entry("3".data(using: .utf8)!),
+                        Entry("4".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "flush 2")
+                    ],
+                    wantCalledWriteCount: 2
+                )
+        ]
+
+        for test in tests {
+            let mwriter = MockWriter(shouldSuccess: true)
+            mwriter.writeCallback = { count in
+                test.expectations[count].fulfill()
+            }
+
+            let mStorage = MockEntryStorage()
+            for l in test.inputLogs {
+                do {
+                    try mStorage.save(l, to: path)
+                } catch {
+                    XCTFail("[\(test.name)] \(error)")
+                }
+            }
+
+            let output = BufferedOutput(writer: mwriter,
+                                        config: test.config,
+                                        entryStorage: mStorage)
+            output.start()
+
+            wait(for: test.expectations, timeout: TimeInterval(test.expectations.count))
             XCTAssertEqual(mwriter.calledWriteCount,
                            test.wantCalledWriteCount,
                            test.name)

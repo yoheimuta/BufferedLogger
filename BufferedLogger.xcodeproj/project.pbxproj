@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF0589F8210F17EC00B23657 /* EntryDiskTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0589F7210F17EC00B23657 /* EntryDiskTests.swift */; };
 		FF09B62121083F94007096F6 /* RetryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B62021083F94007096F6 /* RetryRule.swift */; };
 		FF09B6272108590C007096F6 /* BufferedOutputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B6262108590C007096F6 /* BufferedOutputTests.swift */; };
+		FF454888210EF44D0089CDB2 /* EntryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF454887210EF44D0089CDB2 /* EntryStorage.swift */; };
+		FF45488A210EF5B00089CDB2 /* EntryDisk.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF454889210EF5B00089CDB2 /* EntryDisk.swift */; };
 		FF88706D210819350008C1B1 /* BufferedLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF887063210819340008C1B1 /* BufferedLogger.framework */; };
 		FF887074210819350008C1B1 /* BufferedLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = FF887066210819340008C1B1 /* BufferedLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FF88709C210819A90008C1B1 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF88709B210819A90008C1B1 /* Entry.swift */; };
@@ -30,8 +33,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FF0589F7210F17EC00B23657 /* EntryDiskTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryDiskTests.swift; sourceTree = "<group>"; };
 		FF09B62021083F94007096F6 /* RetryRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryRule.swift; sourceTree = "<group>"; };
 		FF09B6262108590C007096F6 /* BufferedOutputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedOutputTests.swift; sourceTree = "<group>"; };
+		FF454887210EF44D0089CDB2 /* EntryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryStorage.swift; sourceTree = "<group>"; };
+		FF454889210EF5B00089CDB2 /* EntryDisk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryDisk.swift; sourceTree = "<group>"; };
 		FF887063210819340008C1B1 /* BufferedLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BufferedLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF887066210819340008C1B1 /* BufferedLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferedLogger.h; sourceTree = "<group>"; };
 		FF887067210819350008C1B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -86,6 +92,8 @@
 			isa = PBXGroup;
 			children = (
 				FF88709B210819A90008C1B1 /* Entry.swift */,
+				FF454887210EF44D0089CDB2 /* EntryStorage.swift */,
+				FF454889210EF5B00089CDB2 /* EntryDisk.swift */,
 				FF88709D210819C00008C1B1 /* Chunk.swift */,
 				FF88709F210819E40008C1B1 /* Writer.swift */,
 				FF8870A1210819F70008C1B1 /* Config.swift */,
@@ -102,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				FF09B6262108590C007096F6 /* BufferedOutputTests.swift */,
+				FF0589F7210F17EC00B23657 /* EntryDiskTests.swift */,
 				FF887073210819350008C1B1 /* Info.plist */,
 			);
 			path = BufferedLoggerTests;
@@ -239,7 +248,9 @@
 				FF8870A2210819F70008C1B1 /* Config.swift in Sources */,
 				FF8870A621081AC10008C1B1 /* BFLogger.swift in Sources */,
 				FF88709C210819A90008C1B1 /* Entry.swift in Sources */,
+				FF45488A210EF5B00089CDB2 /* EntryDisk.swift in Sources */,
 				FF88709E210819C00008C1B1 /* Chunk.swift in Sources */,
+				FF454888210EF44D0089CDB2 /* EntryStorage.swift in Sources */,
 				FF09B62121083F94007096F6 /* RetryRule.swift in Sources */,
 				FF8870A421081A3D0008C1B1 /* BufferedOutput.swift in Sources */,
 			);
@@ -250,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF09B6272108590C007096F6 /* BufferedOutputTests.swift in Sources */,
+				FF0589F8210F17EC00B23657 /* EntryDiskTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
