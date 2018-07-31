@@ -22,6 +22,11 @@ public struct Config {
     /// retryRule is a rule of retry.
     public let retryRule: RetryRule
 
+    /// maxEntryCountInStorage is a max count of entry to be saved in the storage.
+    /// When the number of entries in the storage reaches this count, it starts to
+    /// delete the older entries.
+    public let maxEntryCountInStorage: Int
+
     /// storagePath is a path to the entries.
     /// When you uses multiple BFLogger, you must set an unique path.
     public let storagePath: String
@@ -29,10 +34,12 @@ public struct Config {
     public init(flushEntryCount: Int = 5,
                 flushInterval: TimeInterval = 10,
                 retryRule: RetryRule = DefaultRetryRule(retryLimit: 3),
+                maxEntryCountInStorage: Int = 1000,
                 storagePath: String = defaultStoragePath) {
         self.flushEntryCount = flushEntryCount
         self.flushInterval = flushInterval
         self.retryRule = retryRule
+        self.maxEntryCountInStorage = maxEntryCountInStorage
         self.storagePath = storagePath
     }
 

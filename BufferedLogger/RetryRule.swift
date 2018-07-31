@@ -11,7 +11,7 @@ import Foundation
 /// RetryRule is a rule about retry.
 public protocol RetryRule {
     /// retryLimit is a retry count.
-    /// The chunk is deleted after it failed more than this number of times.
+    /// The chunk is deleted only from memory after it failed more than this number of times.
     var retryLimit: Int { get }
 
     /// delay is an interval to decide how long to wait for a next retry.

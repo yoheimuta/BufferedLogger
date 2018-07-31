@@ -453,4 +453,138 @@ class BufferedOutputTests: XCTestCase {
                            test.name)
         }
     }
+
+    func testDropEntries() {
+        let path = "testDropEntries"
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+
+        let tests: [(
+            name: String,
+            config: Config,
+            inputLogs: Set<Entry>,
+            emitLogs: Set<Entry>,
+            expectations: [XCTestExpectation],
+            wantPayloads: [Data]
+            )] = [
+                (
+                    name: "expect to drop no entries",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   maxEntryCountInStorage: 3,
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!),
+                        Entry("1".data(using: .utf8)!),
+                        Entry("1".data(using: .utf8)!)
+                    ],
+                    emitLogs: [
+                        Entry("2".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "flush 2")
+                    ],
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!
+                    ]
+                ),
+                (
+                    name: "expect to drop entries",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   maxEntryCountInStorage: 2,
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!),
+                        Entry("1".data(using: .utf8)!),
+                        Entry("1".data(using: .utf8)!),
+                        Entry("1".data(using: .utf8)!)
+                    ],
+                    emitLogs: [
+                        Entry("2".data(using: .utf8)!),
+                        Entry("3".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "flush 2")
+                    ],
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!,
+                        "3".data(using: .utf8)!
+                    ]
+                ),
+                (
+                    name: "expect to drop older entries",
+                    config: Config(flushEntryCount: 2,
+                                   flushInterval: CFTimeInterval.infinity,
+                                   retryRule: DefaultRetryRule(retryLimit: 1),
+                                   maxEntryCountInStorage: 2,
+                                   storagePath: path),
+                    inputLogs: [
+                        Entry("1".data(using: .utf8)!, createTime: fmt.date(from: "2018-1-29")!),
+                        Entry("2".data(using: .utf8)!, createTime: fmt.date(from: "2018-3-29")!),
+                        Entry("3".data(using: .utf8)!, createTime: fmt.date(from: "2018-7-28")!),
+                        Entry("4".data(using: .utf8)!, createTime: fmt.date(from: "2018-7-29")!),
+                        Entry("5".data(using: .utf8)!, createTime: fmt.date(from: "2018-7-30")!),
+                        Entry("6".data(using: .utf8)!, createTime: fmt.date(from: "2018-7-31")!),
+                        Entry("7".data(using: .utf8)!, createTime: fmt.date(from: "2018-6-30")!),
+                        Entry("8".data(using: .utf8)!, createTime: fmt.date(from: "2018-5-30")!),
+                        Entry("9".data(using: .utf8)!, createTime: fmt.date(from: "2018-4-29")!)
+                    ],
+                    emitLogs: [
+                        Entry("10".data(using: .utf8)!),
+                        Entry("11".data(using: .utf8)!)
+                    ],
+                    expectations: [
+                        self.expectation(description: "flush 1"),
+                        self.expectation(description: "flush 2")
+                    ],
+                    wantPayloads: [
+                        "1".data(using: .utf8)!,
+                        "2".data(using: .utf8)!,
+                        "6".data(using: .utf8)!,
+                        "10".data(using: .utf8)!
+                    ]
+                )
+        ]
+
+        for test in tests {
+            let mwriter = MockWriter(shouldSuccess: true)
+            mwriter.writeCallback = { count in
+                test.expectations[count].fulfill()
+            }
+
+            let mStorage = MockEntryStorage()
+            let output = BufferedOutput(writer: mwriter,
+                                        config: test.config,
+                                        entryStorage: mStorage,
+                                        internalErrorLogger: InternalErrorLogger(LogConsoleDestination()))
+            for l in test.inputLogs {
+                do {
+                    try mStorage.save(l, to: path)
+                } catch {
+                    XCTFail("[\(test.name)] \(error)")
+                }
+            }
+
+            output.start()
+
+            for l in test.emitLogs {
+                output.emit(l)
+            }
+
+            wait(for: test.expectations, timeout: TimeInterval(test.expectations.count))
+            XCTAssertEqual(PayloadDecorder.decode(mwriter.givenPayloads).sorted(),
+                           PayloadDecorder.decode(test.wantPayloads).sorted(),
+                           test.name)
+        }
+    }
 }

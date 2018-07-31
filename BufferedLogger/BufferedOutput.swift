@@ -24,6 +24,12 @@ final class BufferedOutput {
         return Date()
     }
 
+    private var sortedBuffer: [Entry] {
+        return buffer.sorted { left, right in
+            left.createTime < right.createTime
+        }
+    }
+
     init(writer: Writer,
          config: Config,
          entryStorage: EntryStorage,
@@ -67,10 +73,22 @@ final class BufferedOutput {
 
     func emit(_ entry: Entry) {
         queue.async {
-            do {
-                try self.entryStorage.save(entry, to: self.config.storagePath)
-            } catch {
-                self.internalErrorLogger.log("failed to save a log to the storage: \(error)")
+            var dropFailed = false
+            if self.config.maxEntryCountInStorage <= self.buffer.count {
+                do {
+                    try self.dropEntities()
+                } catch {
+                    dropFailed = true
+                    self.internalErrorLogger.log("failed to drop logs from the storage: \(error)")
+                }
+            }
+
+            if !dropFailed {
+                do {
+                    try self.entryStorage.save(entry, to: self.config.storagePath)
+                } catch {
+                    self.internalErrorLogger.log("failed to save a log to the storage: \(error)")
+                }
             }
 
             self.buffer.insert(entry)
@@ -121,6 +139,17 @@ final class BufferedOutput {
         }
     }
 
+    /// dropEntities must be called by the queue worker.
+    private func dropEntities() throws {
+        let dropCountAtOneTime = config.flushEntryCount * 3
+        let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
+        let dropped = buffer.subtracting(newBuffer)
+        
+        // dropped the buffer before the failurable action.
+        buffer = newBuffer
+        try entryStorage.remove(dropped, from: config.storagePath)
+    }
+
     /// flush must be called by the queue worker.
     private func flush() {
         lastFlushDate = now
@@ -130,7 +159,7 @@ final class BufferedOutput {
         }
 
         let logCount = min(buffer.count, config.flushEntryCount)
-        let newBuffer = Set(buffer.dropFirst(logCount))
+        let newBuffer = Set(sortedBuffer.dropFirst(logCount))
         let dropped = buffer.subtracting(newBuffer)
         buffer = newBuffer
         let chunk = Chunk(entries: dropped)
