@@ -40,7 +40,7 @@ write method is ensured to call serially, which means it is run by a serial queu
 
 ```swift
 class MyWriter: Writer {
-    func write(_ chunk: Chunk, completion: (Bool) -> Void) {
+    func write(_ chunk: Chunk, completion: @escaping (Bool) -> Void) {
         // You can implement something useful like uploading logs to your server.
         print("chunk is \(chunk)")
 
