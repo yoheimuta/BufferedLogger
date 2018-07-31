@@ -113,4 +113,10 @@ public struct Config {
 
 # Persistence
 
-It stores the unsent entries in the local storage when the application couldn't send log entries.
+BufferedLogger stores the unsent entries in the local storage when the application couldn't send log entries.
+
+By default, it stores them in local files in the Library/Caches directory.
+
+You can also define your own custom log entry storage backed by any storage system.
+
+See the EntryStroage protocol for more details.
