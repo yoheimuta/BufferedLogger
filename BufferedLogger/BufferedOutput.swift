@@ -49,7 +49,7 @@ final class BufferedOutput {
 
     func start() {
         queue.sync {
-            reloadEntities()
+            reloadEntriesFromStorage()
             flush()
 
             setUpTimer()
@@ -58,7 +58,7 @@ final class BufferedOutput {
 
     func resume() {
         queue.sync {
-            reloadEntities()
+            reloadEntriesFromStorage()
             flush()
 
             setUpTimer()
@@ -76,7 +76,7 @@ final class BufferedOutput {
             var dropFailed = false
             if self.config.maxEntryCountInStorage <= self.buffer.count {
                 do {
-                    try self.dropEntities()
+                    try self.dropEntriesFromStorage()
                 } catch {
                     dropFailed = true
                     self.internalErrorLogger.log("failed to drop logs from the storage: \(error)")
@@ -127,8 +127,8 @@ final class BufferedOutput {
         }
     }
 
-    /// reloadEntities must be called by the queue worker.
-    private func reloadEntities() {
+    /// reloadEntriesFromStorage must be called by the queue worker.
+    private func reloadEntriesFromStorage() {
         buffer.removeAll()
 
         do {
@@ -139,8 +139,8 @@ final class BufferedOutput {
         }
     }
 
-    /// dropEntities must be called by the queue worker.
-    private func dropEntities() throws {
+    /// dropEntriesFromStorage must be called by the queue worker.
+    private func dropEntriesFromStorage() throws {
         let dropCountAtOneTime = config.flushEntryCount * 3
         let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
         let dropped = buffer.subtracting(newBuffer)
