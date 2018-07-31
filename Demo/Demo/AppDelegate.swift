@@ -21,7 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let config = Config(flushEntryCount: 5,
                             flushInterval: 10,
                             retryRule: MyRetryRule(retryLimit: 3))
-        logger = BFLogger(writer: writer, config: config)
+        let entryDisk = EntryDisk()
+        logger = BFLogger(writer: writer, config: config, entryStorage: entryDisk)
         logger.post("1".data(using: .utf8)!)
         logger.post("2".data(using: .utf8)!)
         logger.post("3".data(using: .utf8)!)

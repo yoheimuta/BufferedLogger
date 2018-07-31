@@ -16,9 +16,13 @@ public final class BFLogger {
     private let output: BufferedOutput
 
     public init(writer: Writer,
-                config: Config = Config.default) {
+                config: Config = Config.default,
+                entryStorage: EntryStorage = EntryDisk.default,
+                internalErrorLogDestination: InternalErrorLogDestination = LogConsoleDestination()) {
         output = BufferedOutput(writer: writer,
-                                config: config)
+                                config: config,
+                                entryStorage: entryStorage,
+                                internalErrorLogger: InternalErrorLogger(internalErrorLogDestination))
         output.start()
     }
 

@@ -8,6 +8,8 @@
 
 import Foundation
 
+public let defaultStoragePath = "Buffer"
+
 /// Config represents a configuration for buffering and writing logs.
 public struct Config {
     /// flushEntryCount is the maximum number of entries per one chunk.
@@ -20,16 +22,27 @@ public struct Config {
     /// retryRule is a rule of retry.
     public let retryRule: RetryRule
 
-    public init(flushEntryCount: Int,
-                flushInterval: TimeInterval,
-                retryRule: RetryRule) {
+    /// maxEntryCountInStorage is a max count of entry to be saved in the storage.
+    /// When the number of entries in the storage reaches this count, it starts to
+    /// delete the older entries.
+    public let maxEntryCountInStorage: Int
+
+    /// storagePath is a path to the entries.
+    /// When you uses multiple BFLogger, you must set an unique path.
+    public let storagePath: String
+
+    public init(flushEntryCount: Int = 5,
+                flushInterval: TimeInterval = 10,
+                retryRule: RetryRule = DefaultRetryRule(retryLimit: 3),
+                maxEntryCountInStorage: Int = 1000,
+                storagePath: String = defaultStoragePath) {
         self.flushEntryCount = flushEntryCount
         self.flushInterval = flushInterval
         self.retryRule = retryRule
+        self.maxEntryCountInStorage = maxEntryCountInStorage
+        self.storagePath = storagePath
     }
 
     /// default is a default configuration.
-    public static let `default` = Config(flushEntryCount: 5,
-                                         flushInterval: 10,
-                                         retryRule: DefaultRetryRule(retryLimit: 3))
+    public static let `default` = Config()
 }

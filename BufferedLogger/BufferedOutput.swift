@@ -14,6 +14,8 @@ final class BufferedOutput {
 
     private let writer: Writer
     private let config: Config
+    private let entryStorage: EntryStorage
+    private let internalErrorLogger: InternalErrorLogger
 
     private var buffer: Set<Entry> = []
     private var timer: Timer?
@@ -22,9 +24,21 @@ final class BufferedOutput {
         return Date()
     }
 
-    init(writer: Writer, config: Config) {
+    private var sortedBuffer: [Entry] {
+        return buffer.sorted { left, right in
+            left.createTime < right.createTime
+        }
+    }
+
+    init(writer: Writer,
+         config: Config,
+         entryStorage: EntryStorage,
+         internalErrorLogger: InternalErrorLogger
+    ) {
         self.writer = writer
         self.config = config
+        self.entryStorage = entryStorage
+        self.internalErrorLogger = internalErrorLogger
     }
 
     deinit {
@@ -35,13 +49,18 @@ final class BufferedOutput {
 
     func start() {
         queue.sync {
+            reloadEntriesFromStorage()
+            flush()
+
             setUpTimer()
         }
     }
 
     func resume() {
         queue.sync {
+            reloadEntriesFromStorage()
             flush()
+
             setUpTimer()
         }
     }
@@ -54,6 +73,24 @@ final class BufferedOutput {
 
     func emit(_ entry: Entry) {
         queue.async {
+            var dropFailed = false
+            if self.config.maxEntryCountInStorage <= self.buffer.count {
+                do {
+                    try self.dropEntriesFromStorage()
+                } catch {
+                    dropFailed = true
+                    self.internalErrorLogger.log("failed to drop logs from the storage: \(error)")
+                }
+            }
+
+            if !dropFailed {
+                do {
+                    try self.entryStorage.save(entry, to: self.config.storagePath)
+                } catch {
+                    self.internalErrorLogger.log("failed to save a log to the storage: \(error)")
+                }
+            }
+
             self.buffer.insert(entry)
             if self.buffer.count >= self.config.flushEntryCount {
                 self.flush()
@@ -90,6 +127,29 @@ final class BufferedOutput {
         }
     }
 
+    /// reloadEntriesFromStorage must be called by the queue worker.
+    private func reloadEntriesFromStorage() {
+        buffer.removeAll()
+
+        do {
+            let entries = try entryStorage.retrieveAll(from: config.storagePath)
+            buffer = buffer.union(entries)
+        } catch {
+            internalErrorLogger.log("failed to retrieve logs from the storage: \(error)")
+        }
+    }
+
+    /// dropEntriesFromStorage must be called by the queue worker.
+    private func dropEntriesFromStorage() throws {
+        let dropCountAtOneTime = config.flushEntryCount * 3
+        let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
+        let dropped = buffer.subtracting(newBuffer)
+
+        // dropped the buffer before the failurable action.
+        buffer = newBuffer
+        try entryStorage.remove(dropped, from: config.storagePath)
+    }
+
     /// flush must be called by the queue worker.
     private func flush() {
         lastFlushDate = now
@@ -99,7 +159,7 @@ final class BufferedOutput {
         }
 
         let logCount = min(buffer.count, config.flushEntryCount)
-        let newBuffer = Set(buffer.dropFirst(logCount))
+        let newBuffer = Set(sortedBuffer.dropFirst(logCount))
         let dropped = buffer.subtracting(newBuffer)
         buffer = newBuffer
         let chunk = Chunk(entries: dropped)
@@ -109,6 +169,12 @@ final class BufferedOutput {
     private func callWriteChunk(_ chunk: Chunk) {
         writer.write(chunk) { success in
             if success {
+                do {
+                    try self.entryStorage.remove(chunk.entries,
+                                                 from: self.config.storagePath)
+                } catch {
+                    self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
+                }
                 return
             }
 
