@@ -172,6 +172,7 @@ final class BufferedOutput {
         }
 
         writer.write(chunk) { success in
+            self.queue.async {
             if #available(iOS 10.0, *) {
                 dispatchPrecondition(condition: .onQueue(self.queue))
             }
@@ -194,6 +195,7 @@ final class BufferedOutput {
                 self.queue.asyncAfter(deadline: .now() + delay) {
                     self.callWriteChunk(chunk)
                 }
+            }
             }
         }
     }
