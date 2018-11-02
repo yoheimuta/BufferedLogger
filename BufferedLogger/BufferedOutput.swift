@@ -173,29 +173,29 @@ final class BufferedOutput {
 
         writer.write(chunk) { success in
             self.queue.async {
-            if #available(iOS 10.0, *) {
-                dispatchPrecondition(condition: .onQueue(self.queue))
-            }
-
-            if success {
-                do {
-                    try self.entryStorage.remove(chunk.entries,
-                                                 from: self.config.storagePath)
-                } catch {
-                    self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
+                if #available(iOS 10.0, *) {
+                    dispatchPrecondition(condition: .onQueue(self.queue))
                 }
-                return
-            }
 
-            var chunk = chunk
-            chunk.incrementRetryCount()
-
-            if chunk.retryCount <= self.config.retryRule.retryLimit {
-                let delay = self.config.retryRule.delay(try: chunk.retryCount)
-                self.queue.asyncAfter(deadline: .now() + delay) {
-                    self.callWriteChunk(chunk)
+                if success {
+                    do {
+                        try self.entryStorage.remove(chunk.entries,
+                                                     from: self.config.storagePath)
+                    } catch {
+                        self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
+                    }
+                    return
                 }
-            }
+
+                var chunk = chunk
+                chunk.incrementRetryCount()
+
+                if chunk.retryCount <= self.config.retryRule.retryLimit {
+                    let delay = self.config.retryRule.delay(try: chunk.retryCount)
+                    self.queue.asyncAfter(deadline: .now() + delay) {
+                        self.callWriteChunk(chunk)
+                    }
+                }
             }
         }
     }
