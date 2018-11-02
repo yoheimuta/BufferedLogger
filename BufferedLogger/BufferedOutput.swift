@@ -182,6 +182,7 @@ final class BufferedOutput {
         callWriteChunk(chunk)
     }
 
+    /// callWriteChunk must be called by the queue worker
     private func callWriteChunk(_ chunk: Chunk) {
         if #available(iOS 10.0, *) {
             dispatchPrecondition(condition: .onQueue(queue))
