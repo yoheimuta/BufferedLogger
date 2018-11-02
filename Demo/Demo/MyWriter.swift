@@ -17,6 +17,9 @@ class MyWriter: Writer {
             print("entry is \($0)")
         }
 
-        completion(true)
+        let queue = DispatchQueue(label: "com.github.yoheimuta.Demo.MyWriter")
+        queue.async {
+            completion(true)
+        }
     }
 }

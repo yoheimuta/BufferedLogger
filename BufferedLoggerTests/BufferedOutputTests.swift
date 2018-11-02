@@ -32,8 +32,11 @@ final class MockWriter: Writer {
             givenPayloads.append($0.payload)
         }
 
-        completion(shouldSuccess)
-        writeCallback?(calledWriteCount-1)
+        let queue = DispatchQueue(label: "com.github.yoheimuta.BufferedLogger.BufferedOutputTests")
+        queue.async {
+            completion(self.shouldSuccess)
+            self.writeCallback?(self.calledWriteCount-1)
+        }
     }
 }
 

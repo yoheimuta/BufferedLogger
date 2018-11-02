@@ -167,7 +167,15 @@ final class BufferedOutput {
     }
 
     private func callWriteChunk(_ chunk: Chunk) {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         writer.write(chunk) { success in
+            if #available(iOS 10.0, *) {
+                dispatchPrecondition(condition: .onQueue(self.queue))
+            }
+
             if success {
                 do {
                     try self.entryStorage.remove(chunk.entries,
