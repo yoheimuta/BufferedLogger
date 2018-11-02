@@ -15,6 +15,7 @@
 import XCTest
 
 final class MockWriter: Writer {
+    private let queue = DispatchQueue(label: "com.github.yoheimuta.BufferedLogger.BufferedOutputTests")
     private let shouldSuccess: Bool
 
     var writeCallback: ((Int) -> Void)?
@@ -32,10 +33,11 @@ final class MockWriter: Writer {
             givenPayloads.append($0.payload)
         }
 
-        let queue = DispatchQueue(label: "com.github.yoheimuta.BufferedLogger.BufferedOutputTests")
+        let count = calledWriteCount
+
         queue.async {
             completion(self.shouldSuccess)
-            self.writeCallback?(self.calledWriteCount-1)
+            self.writeCallback?(count-1)
         }
     }
 }
@@ -261,6 +263,11 @@ class BufferedOutputTests: XCTestCase {
                            PayloadDecorder.decode(test.wantPayloads).sorted(),
                            test.name)
 
+            let storageIOExpectation = expectation(description: "wait_for_storage_io")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                storageIOExpectation.fulfill()
+            }
+            wait(for: [storageIOExpectation], timeout: 2.0)
             XCTAssertEqual(try mStorage.retrieveAll(from: defaultStoragePath).count,
                            test.wantLeftEntryCount,
                            test.name)
