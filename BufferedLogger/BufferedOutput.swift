@@ -100,6 +100,10 @@ final class BufferedOutput {
 
     /// setUpTimer must be called by the queue worker.
     private func setUpTimer() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         self.timer?.invalidate()
 
         let timer = Timer(timeInterval: 1.0,
@@ -129,6 +133,10 @@ final class BufferedOutput {
 
     /// reloadEntriesFromStorage must be called by the queue worker.
     private func reloadEntriesFromStorage() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         buffer.removeAll()
 
         do {
@@ -141,6 +149,10 @@ final class BufferedOutput {
 
     /// dropEntriesFromStorage must be called by the queue worker.
     private func dropEntriesFromStorage() throws {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         let dropCountAtOneTime = config.flushEntryCount * 3
         let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
         let dropped = buffer.subtracting(newBuffer)
@@ -152,6 +164,10 @@ final class BufferedOutput {
 
     /// flush must be called by the queue worker.
     private func flush() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         lastFlushDate = now
 
         if buffer.isEmpty {
@@ -174,6 +190,7 @@ final class BufferedOutput {
         writer.write(chunk) { success in
             self.queue.async {
                 if #available(iOS 10.0, *) {
+                    // Leave this check for a certain period to attest that the thread-safety bug is fixed.
                     dispatchPrecondition(condition: .onQueue(self.queue))
                 }
 
