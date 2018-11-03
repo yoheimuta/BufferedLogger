@@ -15,7 +15,7 @@
 import XCTest
 
 final class MockWriter: Writer {
-    private let queue = DispatchQueue(label: "com.github.yoheimuta.BufferedLogger.BufferedOutputTests")
+    private let queue = DispatchQueue.global()
     private let shouldSuccess: Bool
 
     var writeCallback: ((Int) -> Void)?
