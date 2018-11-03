@@ -32,8 +32,12 @@ final class MockWriter: Writer {
             givenPayloads.append($0.payload)
         }
 
-        completion(shouldSuccess)
-        writeCallback?(calledWriteCount-1)
+        let count = calledWriteCount
+
+        DispatchQueue.global().async {
+            completion(self.shouldSuccess)
+            self.writeCallback?(count-1)
+        }
     }
 }
 
@@ -50,7 +54,13 @@ final class MockRetryRule: RetryRule {
 }
 
 final class MockEntryStorage: EntryStorage {
+    private let removeCallback: ((Int) -> Void)?
+    private(set) var calledRemoveCount: Int = 0
     private var buffer: [String: Set<Entry>] = [:]
+
+    init(removeCallback: ((Int) -> Void)? = nil) {
+        self.removeCallback = removeCallback
+    }
 
     func retrieveAll(from path: String) throws -> Set<Entry> {
         guard let logs = buffer[path] else {
@@ -68,6 +78,11 @@ final class MockEntryStorage: EntryStorage {
 
     func remove(_ logs: Set<Entry>, from path: String) throws {
         buffer[path]?.subtract(logs)
+
+        calledRemoveCount += 1
+        if let callback = removeCallback {
+            callback(calledRemoveCount - 1)
+        }
     }
 }
 
@@ -89,6 +104,7 @@ class BufferedOutputTests: XCTestCase {
             config: Config,
             inputPayloads: [Data],
             expectations: [XCTestExpectation],
+            storageRemovalExpectations: [XCTestExpectation],
             waitTime: TimeInterval,
             wantPayloads: [Data],
             wantLeftEntryCount: Int
@@ -104,6 +120,9 @@ class BufferedOutputTests: XCTestCase {
                     ],
                     expectations: [
                         self.expectation(description: "flush 1")
+                    ],
+                    storageRemovalExpectations: [
+                        self.expectation(description: "remove 1")
                     ],
                     waitTime: 1,
                     wantPayloads: [
@@ -125,6 +144,10 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1"),
                         self.expectation(description: "flush 2")
                     ],
+                    storageRemovalExpectations: [
+                        self.expectation(description: "remove 1"),
+                        self.expectation(description: "remove 2")
+                    ],
                     waitTime: 1,
                     wantPayloads: [
                         "1".data(using: .utf8)!,
@@ -144,6 +167,9 @@ class BufferedOutputTests: XCTestCase {
                     ],
                     expectations: [
                         self.expectation(description: "flush 1")
+                    ],
+                    storageRemovalExpectations: [
+                        self.expectation(description: "remove 1")
                     ],
                     waitTime: 1,
                     wantPayloads: [
@@ -165,6 +191,9 @@ class BufferedOutputTests: XCTestCase {
                     ],
                     expectations: [
                         self.expectation(description: "flush 1")
+                    ],
+                    storageRemovalExpectations: [
+                        self.expectation(description: "remove 1")
                     ],
                     waitTime: 2,
                     wantPayloads: [
@@ -190,6 +219,10 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "flush 1"),
                         self.expectation(description: "flush 2")
                     ],
+                    storageRemovalExpectations: [
+                        self.expectation(description: "remove 1"),
+                        self.expectation(description: "remove 2")
+                    ],
                     waitTime: 4,
                     wantPayloads: [
                         "1".data(using: .utf8)!,
@@ -214,6 +247,8 @@ class BufferedOutputTests: XCTestCase {
                         self.expectation(description: "retry 2"),
                         self.expectation(description: "retry 3")
                     ],
+                    storageRemovalExpectations: [
+                    ],
                     waitTime: 4,
                     wantPayloads: [
                         "1".data(using: .utf8)!,
@@ -230,7 +265,10 @@ class BufferedOutputTests: XCTestCase {
                 test.expectations[count].fulfill()
             }
 
-            let mStorage = MockEntryStorage()
+            let mStorage = MockEntryStorage(removeCallback: { count in
+                test.storageRemovalExpectations[count].fulfill()
+            })
+
             let output = BufferedOutput(writer: test.writer,
                                         config: test.config,
                                         entryStorage: mStorage,
@@ -258,9 +296,17 @@ class BufferedOutputTests: XCTestCase {
                            PayloadDecorder.decode(test.wantPayloads).sorted(),
                            test.name)
 
+            // Wait for a while until the entries are deleted from entryStorage
+            // because the callback block of Writer.write is run on any thread.
+            // ref. https://github.com/yoheimuta/BufferedLogger/pull/7 {
+            wait(for: test.storageRemovalExpectations, timeout: 2.0)
+            XCTAssertEqual(mStorage.calledRemoveCount,
+                           test.storageRemovalExpectations.count,
+                           test.name)
             XCTAssertEqual(try mStorage.retrieveAll(from: defaultStoragePath).count,
                            test.wantLeftEntryCount,
                            test.name)
+            // }
         }
     }
 

@@ -17,6 +17,8 @@ class MyWriter: Writer {
             print("entry is \($0)")
         }
 
-        completion(true)
+        DispatchQueue.global().async {
+            completion(true)
+        }
     }
 }

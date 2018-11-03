@@ -100,6 +100,10 @@ final class BufferedOutput {
 
     /// setUpTimer must be called by the queue worker.
     private func setUpTimer() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         self.timer?.invalidate()
 
         let timer = Timer(timeInterval: 1.0,
@@ -129,6 +133,10 @@ final class BufferedOutput {
 
     /// reloadEntriesFromStorage must be called by the queue worker.
     private func reloadEntriesFromStorage() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         buffer.removeAll()
 
         do {
@@ -141,6 +149,10 @@ final class BufferedOutput {
 
     /// dropEntriesFromStorage must be called by the queue worker.
     private func dropEntriesFromStorage() throws {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         let dropCountAtOneTime = config.flushEntryCount * 3
         let newBuffer = Set(sortedBuffer.dropFirst(dropCountAtOneTime))
         let dropped = buffer.subtracting(newBuffer)
@@ -152,6 +164,10 @@ final class BufferedOutput {
 
     /// flush must be called by the queue worker.
     private func flush() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         lastFlushDate = now
 
         if buffer.isEmpty {
@@ -166,25 +182,37 @@ final class BufferedOutput {
         callWriteChunk(chunk)
     }
 
+    /// callWriteChunk must be called by the queue worker
     private func callWriteChunk(_ chunk: Chunk) {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(queue))
+        }
+
         writer.write(chunk) { success in
-            if success {
-                do {
-                    try self.entryStorage.remove(chunk.entries,
-                                                 from: self.config.storagePath)
-                } catch {
-                    self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
+            self.queue.async {
+                if #available(iOS 10.0, *) {
+                    // Leave this check for a certain period to attest that the thread-safety bug is fixed.
+                    dispatchPrecondition(condition: .onQueue(self.queue))
                 }
-                return
-            }
 
-            var chunk = chunk
-            chunk.incrementRetryCount()
+                if success {
+                    do {
+                        try self.entryStorage.remove(chunk.entries,
+                                                     from: self.config.storagePath)
+                    } catch {
+                        self.internalErrorLogger.log("failed to remove logs from the storage: \(error)")
+                    }
+                    return
+                }
 
-            if chunk.retryCount <= self.config.retryRule.retryLimit {
-                let delay = self.config.retryRule.delay(try: chunk.retryCount)
-                self.queue.asyncAfter(deadline: .now() + delay) {
-                    self.callWriteChunk(chunk)
+                var chunk = chunk
+                chunk.incrementRetryCount()
+
+                if chunk.retryCount <= self.config.retryRule.retryLimit {
+                    let delay = self.config.retryRule.delay(try: chunk.retryCount)
+                    self.queue.asyncAfter(deadline: .now() + delay) {
+                        self.callWriteChunk(chunk)
+                    }
                 }
             }
         }
