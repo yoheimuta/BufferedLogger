@@ -263,14 +263,18 @@ class BufferedOutputTests: XCTestCase {
                            PayloadDecorder.decode(test.wantPayloads).sorted(),
                            test.name)
 
-            let storageIOExpectation = expectation(description: "wait_for_storage_io")
+            // Wait for a while until the entries are deleted from entryStorage
+            // because the callback block of Writer.write is run on any thread.
+            // ref. https://github.com/yoheimuta/BufferedLogger/pull/7 {
+            let storageRemovalExpectation = expectation(description: "wait_for_storage_removal")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                storageIOExpectation.fulfill()
+                storageRemovalExpectation.fulfill()
             }
-            wait(for: [storageIOExpectation], timeout: 2.0)
+            wait(for: [storageRemovalExpectation], timeout: 2.0)
             XCTAssertEqual(try mStorage.retrieveAll(from: defaultStoragePath).count,
                            test.wantLeftEntryCount,
                            test.name)
+            // }
         }
     }
 
