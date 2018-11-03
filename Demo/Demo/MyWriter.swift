@@ -10,8 +10,6 @@ import BufferedLogger
 import Foundation
 
 class MyWriter: Writer {
-    private let queue = DispatchQueue.global()
-
     func write(_ chunk: Chunk, completion: @escaping (Bool) -> Void) {
         print("chunk is \(chunk)")
 
@@ -19,7 +17,7 @@ class MyWriter: Writer {
             print("entry is \($0)")
         }
 
-        queue.async {
+        DispatchQueue.global().async {
             completion(true)
         }
     }

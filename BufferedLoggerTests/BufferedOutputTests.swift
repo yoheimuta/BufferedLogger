@@ -15,7 +15,6 @@
 import XCTest
 
 final class MockWriter: Writer {
-    private let queue = DispatchQueue.global()
     private let shouldSuccess: Bool
 
     var writeCallback: ((Int) -> Void)?
@@ -35,7 +34,7 @@ final class MockWriter: Writer {
 
         let count = calledWriteCount
 
-        queue.async {
+        DispatchQueue.global().async {
             completion(self.shouldSuccess)
             self.writeCallback?(count-1)
         }
