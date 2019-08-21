@@ -120,3 +120,9 @@ By default, it stores them in local files in the Library/Caches directory.
 You can also define your own custom log entry storage backed by any storage system.
 
 See the EntryStroage protocol for more details.
+
+# Acknowledgement
+
+Thank you to the Puree-Swift: https://github.com/cookpad/Puree-Swift
+
+I inspired by this library for the elaborate design, interface and some implementation.
