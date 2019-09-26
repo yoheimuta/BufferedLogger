@@ -3,6 +3,8 @@
 [![Build Status](https://app.bitrise.io/app/75f1a12b7326ea09/status.svg?token=-Wus-j9Iq8IVKcFB3wLhSg&branch=master)](https://app.bitrise.io/app/75f1a12b7326ea09)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 <a href="https://swift.org" target="_blank"><img src="https://img.shields.io/badge/Language-Swift5-orange.svg" alt="Language Swift 5"></a>
+[![Version](https://img.shields.io/cocoapods/v/BufferedLogger.svg?style=flat)](http://cocoapods.org/pods/BufferedLogger)
+[![License](https://img.shields.io/cocoapods/l/BufferedLogger.svg?style=flat)](http://cocoapods.org/pods/BufferedLogger)
 
 BufferedLogger is a tiny but thread-safe logger with a buffering and retrying mechanism for iOS.
 
@@ -26,6 +28,12 @@ You can use this framework...
 
 ```
 github "yoheimuta/BufferedLogger"
+```
+
+### CocoaPods
+
+```
+pod "BufferedLogger"
 ```
 
 ## Usage
@@ -121,7 +129,7 @@ You can also define your own custom log entry storage backed by any storage syst
 
 See the EntryStroage protocol for more details.
 
-## Contributing
+# Contributing
 
 - Fork it
 - Create your feature branch: git checkout -b your-new-feature
@@ -129,7 +137,7 @@ See the EntryStroage protocol for more details.
 - Push to the branch: git push origin your-new-feature
 - Submit a pull request
 
-## License
+# License
 
 The MIT License (MIT)
 
