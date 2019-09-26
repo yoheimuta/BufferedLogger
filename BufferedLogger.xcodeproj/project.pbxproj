@@ -238,7 +238,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -exo pipefail\n\nPODS_ROOT=./Demo/Pods\n\nif [ -z \"$CI\" ]; then\n    ${PODS_ROOT}/SwiftLint/swiftlint autocorrect\n    ${PODS_ROOT}/SwiftLint/swiftlint\n\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger\nelse\n    ${PODS_ROOT}/SwiftLint/swiftlint --strict\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger --dryrun | tee /dev/stderr | grep 'swiftformat completed. 0'\nfi";
+			shellScript = "set -exo pipefail\n\nPODS_ROOT=./Demo/Pods\n\nif [ -z \"$CI\" ]; then\n    ${PODS_ROOT}/SwiftLint/swiftlint autocorrect\n    ${PODS_ROOT}/SwiftLint/swiftlint\n\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger\nelse\n    ${PODS_ROOT}/SwiftLint/swiftlint --strict\n    ${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat BufferedLogger --dryrun | tee /dev/stderr | grep 'swiftformat completed. 0'\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
