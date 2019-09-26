@@ -112,7 +112,7 @@ final class BufferedOutput {
                           userInfo: nil,
                           repeats: true)
         DispatchQueue.main.async {
-            RunLoop.main.add(timer, forMode: .commonModes)
+            RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
         }
         self.timer = timer
     }

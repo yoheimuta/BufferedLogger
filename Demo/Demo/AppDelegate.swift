@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var logger: BFLogger!
 
     func application(_: UIApplication,
-                     didFinishLaunchingWithOptions _: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+                     didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let writer = MyWriter()
         let config = Config(flushEntryCount: 5,
                             flushInterval: 10,

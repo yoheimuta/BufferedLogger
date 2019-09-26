@@ -19,8 +19,8 @@ public struct Entry: Codable, Hashable {
     /// identifier is an unique entry ID.
     public let identifier: UUID
 
-    public var hashValue: Int {
-        return identifier.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
     }
 
     public static func == (lhs: Entry, rhs: Entry) -> Bool {
